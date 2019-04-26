@@ -70,7 +70,7 @@ export default {
     getData (postId) {
       const self = this
       this.$http
-        .post('/details', {
+        .get('/api/details', {
           postId
         })
         .then(res => {
@@ -86,7 +86,7 @@ export default {
         })
 
       this.$http
-        .post('/related', {
+        .get('/api/related', {
           postId
         })
         .then(res => {

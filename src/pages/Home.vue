@@ -102,7 +102,7 @@ export default {
       return new Promise((resolve, reject) => {
         this.isLoading = true
         this.$http
-          .post('/api/page', {
+          .get('/api/page', {
             currentPage: this.currentPage
           })
           .then(res => {

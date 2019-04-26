@@ -97,7 +97,6 @@ export default {
           })
       })
     },
-
     getMoreData () {
       return new Promise((resolve, reject) => {
         this.isLoading = true

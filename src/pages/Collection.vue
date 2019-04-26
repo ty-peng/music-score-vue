@@ -159,7 +159,6 @@ export default {
     },
     delAll () {
       this.showDelModal = false
-
       const collection = JSON.parse(localStorage.collection)
       for (let i = 0; i < this.checkedId.length; i++) {
         let curIdx

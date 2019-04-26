@@ -108,7 +108,7 @@ export default {
     getData () {
       return new Promise((resolve, reject) => {
         this.$http
-          .post('/cate', {
+          .get('/api/cate', {
             cate: this.cateId,
             currentPage: this.currentPage
           })

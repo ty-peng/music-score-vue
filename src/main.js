@@ -4,10 +4,12 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import axios from 'axios'
+// import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import './../src/assets/css/iview-theme.less'
 import './../src/assets/css/coverIview.css'
 import './../src/assets/css/normal.css'
+// 部分引入，注意更改 .babelrc 文件配置
 import {
   Row,
   Col,
@@ -25,7 +27,8 @@ import {
   Checkbox,
   Notice,
   Message,
-  Modal
+  Modal,
+  Form
 } from 'iview'
 
 Vue.component('Row', Row)
@@ -44,12 +47,13 @@ Vue.component('Checkbox', Checkbox)
 Vue.component('Notice', Notice)
 Vue.component('Message', Message)
 Vue.component('Modal', Modal)
+Vue.component('Form', Form)
 
 Vue.prototype.$http = axios
 Vue.prototype.$Loading = LoadingBar
 Vue.prototype.$Notice = Notice
 Vue.prototype.$Message = Message
-Vue.prototype.$IVIEW = {}
+// Vue.prototype.$IVIEW = {}
 
 Notice.config({
   top: 200,

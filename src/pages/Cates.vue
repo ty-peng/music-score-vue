@@ -24,7 +24,7 @@ export default {
   },
   created () {
     this.$http
-      .get('/cates.json')
+      .get('/api/cates.json')
       .then(res => {
         this.cateData = res.data
       })

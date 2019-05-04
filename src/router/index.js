@@ -6,6 +6,7 @@ import Cate from '@/pages/Cate'
 import Search from '@/pages/Search'
 import Cates from '@/pages/Cates'
 import Collection from '@/pages/Collection'
+import LoginPage from '@/pages/LoginPage'
 
 Vue.use(Router)
 
@@ -51,6 +52,11 @@ export default new Router({
       meta: {
         title: '我的收藏'
       }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginPage
     }
   ]
 })

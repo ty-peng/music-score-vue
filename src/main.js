@@ -7,13 +7,8 @@ import store from './store'
 import axios from 'axios'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
-import './../src/assets/css/iview-theme.less'
-import './../src/assets/css/coverIview.css'
-import './../src/assets/css/normal.css'
-// 部分引入，注意更改 .babelrc 文件配置
-/* import { Row } from 'iview'
-Vue.component('Row', Row)
- */
+import './assets/css/iview-theme.less'
+import './assets/css/normal.css'
 
 Vue.use(iView)
 
@@ -21,7 +16,6 @@ Vue.prototype.$http = axios
 Vue.prototype.$Loading = iView.LoadingBar
 Vue.prototype.$Notice = iView.Notice
 Vue.prototype.$Message = iView.Message
-// Vue.prototype.$IVIEW = {}
 
 iView.Notice.config({
   top: 200,

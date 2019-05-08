@@ -10,8 +10,13 @@
           </router-link>
         </h1>
       </div>
-      <div class="collection fr">
-        <router-link to="/collection">我的收藏</router-link>
+      <div class="me fr">
+        <div v-if="isLogin">
+          <router-link to="/collection">我的</router-link>
+        </div>
+        <div v-else>
+          <router-link to="/login">登录</router-link>
+        </div>
       </div>
       <div class="cates fr">
         <ul class="nav">
@@ -46,6 +51,7 @@ export default {
   name: 'NavHeader',
   data () {
     return {
+      isLogin: false, // TODO 状态、登录处理
       displayMenu: false,
       searchText: ''
     }
@@ -73,38 +79,28 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-.icon {
-  width: 1em;
-  height: 1em;
-  vertical-align: -0.15em;
-  fill: currentColor;
-  overflow: hidden;
-}
-
-.header {
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  width: 100%;
-  line-height: 50px;
-  border-bottom: 1px solid #e8eaec;
-  background-color: #fff;
-}
-
-.width-limit {
-  width: 1200px;
-  margin: 0 auto;
-}
-
-.cates {
-  .cates-item {
-    display: inline-block;
-    margin-left: 20px;
-  }
-}
-
-.collection {
-  margin-left: 30px;
-}
+<style lang="stylus" rel="stylesheet/stylus" scoped>
+.icon
+  width 1em
+  height 1em
+  vertical-align -0.15em
+  fill currentColor
+  overflow hidden
+.header
+  position fixed
+  z-index 1
+  top 0
+  width 100%
+  line-height 50px
+  border-bottom 1px solid #e8eaec
+  background-color #fff
+.width-limit
+  width 1200px
+  margin 0 auto
+.cates
+  .cates-item
+    display inline-block
+    margin-left 20px
+.me
+  margin-left 30px
 </style>

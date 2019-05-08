@@ -2,7 +2,10 @@
   <div class="login">
     <main class="content"
           ref="content">
-      <Login></Login>
+      <Card class="login-card"
+            :bordered="false">
+        <Login></Login>
+      </Card>
     </main>
   </div>
 </template>
@@ -16,3 +19,11 @@ export default {
   }
 }
 </script>
+
+<style>
+.login-card {
+  width: 450px;
+  margin: 0 auto;
+  padding: 10px;
+}
+</style>

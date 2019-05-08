@@ -17,18 +17,24 @@ export default new Router({
       name: 'home',
       component: Home,
       meta: {
-        title: '有谱 - 曲谱分享'
+        title: '首页 - 有谱'
       }
     },
     {
       path: '/details/:id',
       name: 'details',
-      component: Details
+      component: Details,
+      meta: {
+        title: '曲谱详情 - 有谱'
+      }
     },
     {
       path: '/cate/:cateId',
       name: 'cate',
-      component: Cate
+      component: Cate,
+      meta: {
+        title: '指定分类 - 有谱'
+      }
     },
     {
       path: '/cate/:cateId/:cateSubId',
@@ -38,25 +44,34 @@ export default new Router({
     {
       path: '/search',
       name: 'search',
-      component: Search
+      component: Search,
+      meta: {
+        title: '搜索 - 有谱'
+      }
     },
     {
       path: '/cates',
       name: 'cates',
-      component: Cates
+      component: Cates,
+      meta: {
+        title: '分类列表 - 有谱'
+      }
     },
     {
       path: '/collection',
       name: 'collection',
       component: Collection,
       meta: {
-        title: '我的收藏'
+        title: '我的收藏 - 有谱'
       }
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginPage
+      component: LoginPage,
+      meta: {
+        title: '登录 - 有谱'
+      }
     }
   ]
 })

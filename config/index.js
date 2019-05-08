@@ -11,9 +11,11 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://localhost:8088',
+        target:
+          'https://easy-mock.com/mock/5ccd79f0fbb74a2e6ff5dd8f/music-score',
+        changeOrigin: true,
         pathRewrite: {
-          '^/api': '/static/mock'
+          '^/api': ''
         }
       }
     },

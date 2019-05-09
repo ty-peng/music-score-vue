@@ -64,9 +64,9 @@ export default {
       isEnd: false,
       isLoading: true,
       carousels: [
-        { id: 1, url: '/static/img/img1.jpeg', target: '' },
-        { id: 2, url: '/static/img/img2.jpeg', target: '' },
-        { id: 3, url: '/static/img/img3.jpeg', target: '' }
+        { id: 1, url: '/static/img/c1.jpg', target: '' },
+        { id: 2, url: '/static/img/c2.jpg', target: '' },
+        { id: 3, url: '/static/img/c3.jpg', target: '' }
       ]
     }
   },

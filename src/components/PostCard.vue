@@ -110,13 +110,13 @@ export default {
 .post {
   float: left;
   box-sizing: border-box;
-  width: 237px;
+  width: 250px;
   margin: 0 10px 10px 0;
-  border: 1px solid #e8eaec;
   border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   &:hover {
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   }
 }
 

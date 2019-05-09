@@ -1,7 +1,7 @@
 <template>
   <main class="home"
         ref="content">
-    <Row class="sec-1">
+    <Row class="sec-carousel">
       <i-col span="20"
              offset="2">
         <Carousel autoplay
@@ -11,31 +11,43 @@
           <CarouselItem class="carousel-item"
                         v-for="item in carousels"
                         :key="item.id">
-            <router-link to>
+            <router-link :to="item.target">
               <img class="pic"
-                   :src="item.url">
+                   :src="item.src">
             </router-link>
           </CarouselItem>
         </Carousel>
       </i-col>
     </Row>
-    <div class="sec-2 expand-width clearfix">
-      <PostCard v-for="(item, index) in postData"
-                :postData="item"
-                :key="'post-'+index"></PostCard>
-      <Loading :isLoading="isLoading"
-               :isEnd="isEnd"></Loading>
-    </div>
+    <HomeList :scores="hotList"
+              :more="'/scores/hot'"><span slot="title">热门曲谱</span></HomeList>
+    <HomeList :scores="newList"
+              :more="'/scores/new'"><span slot="title">最新曲谱</span></HomeList>
   </main>
 </template>
 
 <script>
-import PostCard from './../components/PostCard.vue'
-import Loading from './../components/Loading.vue'
-import infiniteScroll from './../assets/js/infinite-scroll.js'
+
+import HomeList from './../components/HomeList'
 
 export default {
   name: 'home',
+  data () {
+    return {
+      carousel: 0,
+      currentPage: 1,
+      newList: [],
+      hotList: [],
+      postData: [],
+      isEnd: false,
+      isLoading: true,
+      carousels: [
+        { id: 1, src: '/static/img/c1.jpg', target: '' },
+        { id: 2, src: '/static/img/c2.jpg', target: '' },
+        { id: 3, src: '/static/img/c3.jpg', target: '' }
+      ]
+    }
+  },
   created () {
     this.$Loading.start()
     if (!localStorage.collection) {
@@ -53,33 +65,9 @@ export default {
         this.$Loading.error()
         console.log(err)
       })
-
-    infiniteScroll(this.$refs.content, 200, this.getMoreData, this.isEnd)
-  },
-  data () {
-    return {
-      carousel: 0,
-      currentPage: 1,
-      postData: [],
-      isEnd: false,
-      isLoading: true,
-      carousels: [
-        { id: 1, url: '/static/img/c1.jpg', target: '' },
-        { id: 2, url: '/static/img/c2.jpg', target: '' },
-        { id: 3, url: '/static/img/c3.jpg', target: '' }
-      ]
-    }
   },
   components: {
-    PostCard,
-    Loading
-  },
-  watch: {
-    isEnd () {
-      if (this.isEnd) {
-        infiniteScroll(this.$refs.content, 200, this.getMoreData, this.isEnd)
-      }
-    }
+    HomeList
   },
   methods: {
     getData () {
@@ -91,6 +79,8 @@ export default {
           .then(res => {
             this.currentPage++
             this.postData = res.data
+            this.hotList = res.data
+            this.newList = res.data
             resolve()
           })
           .catch(err => {

@@ -1,8 +1,9 @@
 <template>
-  <div class="home">
-    <main class="main"
-          ref="content">
-      <div class="sec-1">
+  <main class="home"
+        ref="content">
+    <Row class="sec-1">
+      <i-col span="20"
+             offset="2">
         <Carousel autoplay
                   v-model="carousel"
                   loop
@@ -16,16 +17,16 @@
             </router-link>
           </CarouselItem>
         </Carousel>
-      </div>
-      <div class="sec-2 expand-width clearfix">
-        <PostCard v-for="(item, index) in postData"
-                  :postData="item"
-                  :key="'post-'+index"></PostCard>
-        <Loading :isLoading="isLoading"
-                 :isEnd="isEnd"></Loading>
-      </div>
-    </main>
-  </div>
+      </i-col>
+    </Row>
+    <div class="sec-2 expand-width clearfix">
+      <PostCard v-for="(item, index) in postData"
+                :postData="item"
+                :key="'post-'+index"></PostCard>
+      <Loading :isLoading="isLoading"
+               :isEnd="isEnd"></Loading>
+    </div>
+  </main>
 </template>
 
 <script>
@@ -131,17 +132,14 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-.carousel {
-  height: 370px;
-  border-radius: 8px;
-  overflow: hidden;
-
-  .carousel-item {
-    .pic {
-      min-width: 100%;
-      height: 100%;
-    }
-  }
-}
+<style lang="stylus" scoped>
+.carousel
+  width 100%
+  height 0
+  padding-bottom 35%
+  overflow hidden
+  border-radius 8px
+  .carousel-item
+    .pic
+      width 100%
 </style>

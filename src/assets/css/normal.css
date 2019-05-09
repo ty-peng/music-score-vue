@@ -8,14 +8,7 @@ h6 {
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
     'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
 }
-a {
-  color: #515a6e;
-}
-a a:hover {
-  color: #17233d;
-}
 main {
-  width: 980px;
   margin: 50px auto 0;
   padding-top: 30px;
 }

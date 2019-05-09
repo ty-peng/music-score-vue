@@ -1,12 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/pages/Home'
+import Scores from '@/pages/Scores'
 import Details from '@/pages/Details'
 import Cate from '@/pages/Cate'
 import Search from '@/pages/Search'
 import Cates from '@/pages/Cates'
 import Collection from '@/pages/Collection'
 import LoginPage from '@/pages/LoginPage'
+import Register from '@/pages/Register'
+import User from '@/pages/User'
+import Upload from '@/pages/Upload'
 
 Vue.use(Router)
 
@@ -21,11 +25,59 @@ export default new Router({
       }
     },
     {
+      path: '/scores/:type',
+      name: 'scores',
+      component: Scores,
+      meta: {
+        title: '谱库 - 有谱'
+      }
+    },
+    {
       path: '/details/:id',
       name: 'details',
       component: Details,
       meta: {
         title: '曲谱详情 - 有谱'
+      }
+    },
+    {
+      path: '/search',
+      name: 'search',
+      component: Search,
+      meta: {
+        title: '搜索 - 有谱'
+      }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginPage,
+      meta: {
+        title: '登录 - 有谱'
+      }
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: Register,
+      meta: {
+        title: '注册 - 有谱'
+      }
+    },
+    {
+      path: '/user/:account',
+      name: 'user',
+      component: User,
+      meta: {
+        title: '个人中心 - 有谱'
+      }
+    },
+    {
+      path: '/upload',
+      name: 'upload',
+      component: Upload,
+      meta: {
+        title: '上传曲谱 - 有谱'
       }
     },
     {
@@ -42,14 +94,6 @@ export default new Router({
       component: Cate
     },
     {
-      path: '/search',
-      name: 'search',
-      component: Search,
-      meta: {
-        title: '搜索 - 有谱'
-      }
-    },
-    {
       path: '/cates',
       name: 'cates',
       component: Cates,
@@ -58,19 +102,11 @@ export default new Router({
       }
     },
     {
-      path: '/collection',
+      path: '/user/:account/collection',
       name: 'collection',
       component: Collection,
       meta: {
         title: '我的收藏 - 有谱'
-      }
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: LoginPage,
-      meta: {
-        title: '登录 - 有谱'
       }
     }
   ]

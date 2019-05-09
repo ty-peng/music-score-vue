@@ -33,7 +33,7 @@
                 <Icon type="md-person"
                       size="15" />&nbsp;个人中心</DropdownItem>
             </router-link>
-            <router-link to="/collection">
+            <router-link :to="userUrl + '/collection'">
               <DropdownItem>
                 <Icon type="ios-star-outline"
                       size="15" />&nbsp;我的收藏
@@ -68,6 +68,21 @@
         </DropdownMenu>
       </Dropdown>
     </div>
+    <div class="search fr">
+      <i-input search
+               placeholder="请输入搜索内容"
+               size="large"
+               v-model="searchText"
+               @on-search="search">
+        <Select v-model="searchType"
+                slot="prepend"
+                style="width: 60px">
+          <Option v-for="(item, key) in searchTypes"
+                  :value="item.value"
+                  :key="key">{{item.msg}}</Option>
+        </Select>
+      </i-input>
+    </div>
     <Menu mode="horizontal"
           :theme="theme"
           active-name="1"
@@ -95,22 +110,6 @@
                   to="/scores/all">其他</MenuItem>
       </Submenu>
     </Menu>
-    <div class="search fr">
-      <i-input search
-               placeholder="请输入搜索内容"
-               size="large"
-               v-model="searchText"
-               @on-search="search"
-               style="width: 350px">
-        <Select v-model="searchType"
-                slot="prepend"
-                style="width: 80px; background-color: rgba(253,252, 256,0.5)">
-          <Option v-for="(item, key) in searchTypes"
-                  :value="item.value"
-                  :key="key">{{item.msg}}</Option>
-        </Select>
-      </i-input>
-    </div>
   </header>
 </template>
 
@@ -132,7 +131,7 @@ export default {
         { value: 'ukulele', msg: '尤克里里' },
         { value: 'user', msg: '用户' }
       ],
-      isLogin: false, // TODO 状态、登录处理
+      isLogin: true, // TODO 状态、登录处理
       displayMenu: false,
       searchText: ''
     }

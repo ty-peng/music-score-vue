@@ -8,12 +8,12 @@ import qs from 'qs' // 根据需求是否导入qs模块（序列化）
 
 const home = {
   // 热门列表
-  hotList () {
-    return axios.get(`${base.baseUrl}/scores/hot`)
+  hotList (scoresQo) {
+    return axios.post(`${base.baseUrl}/scores/hot`, scoresQo)
   },
   // 最新列表
-  newList () {
-    return axios.get(`${base.baseUrl}/scores/new`)
+  newList (scoresQo) {
+    return axios.post(`${base.baseUrl}/scores/new`, scoresQo)
   },
   // 曲谱详情
   scoreDetail (id, params) {

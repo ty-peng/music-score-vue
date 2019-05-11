@@ -35,89 +35,51 @@ export default {
   data () {
     return {
       carousel: 0,
-      currentPage: 1,
-      newList: [],
-      hotList: [],
-      postData: [],
-      isEnd: false,
-      isLoading: true,
       carousels: [
         { id: 1, src: '/static/img/c1.jpg', target: '' },
         { id: 2, src: '/static/img/c2.jpg', target: '' },
         { id: 3, src: '/static/img/c3.jpg', target: '' }
-      ]
+      ],
+      scoresQo: {
+        limit: 20,
+        offset: 0
+      },
+      newList: [],
+      hotList: []
     }
   },
   created () {
     this.$Loading.start()
-    if (!localStorage.collection) {
-      localStorage.collection = JSON.stringify([])
+    if (!localStorage.token) {
+      localStorage.token = ''
     }
   },
   mounted () {
-    this.getData()
-      .then(res => {
-        this.$Loading.finish()
-        this.isLoading = false
-      })
-      .catch(err => {
-        this.isLoading = false
-        this.$Loading.error()
-        console.log(err)
-      })
+    this.getList()
+  },
+  methods: {
+    getList () {
+      this.$api.home.hotList(this.scoresQo)
+        .then(res => {
+          if (!res.data.success) {
+            this.$Message.error(res.data.msg)
+            return
+          }
+          this.hotList = res.data.data
+        })
+      this.$api.home.newList(this.scoresQo)
+        .then(res => {
+          if (!res.data.success) {
+            this.$Message.error(res.data.msg)
+            return
+          }
+          this.newList = res.data.data
+        })
+      this.$Loading.finish()
+    }
   },
   components: {
     HomeList
-  },
-  methods: {
-    getData () {
-      return new Promise((resolve, reject) => {
-        this.$http
-          .get('/api/page', {
-            currentPage: this.currentPage
-          })
-          .then(res => {
-            this.currentPage++
-            this.postData = res.data
-            this.hotList = res.data
-            this.newList = res.data
-            resolve()
-          })
-          .catch(err => {
-            console.log(err)
-            reject(err)
-          })
-      })
-    },
-    getMoreData () {
-      return new Promise((resolve, reject) => {
-        this.isLoading = true
-        this.$http
-          .get('/api/page', {
-            currentPage: this.currentPage
-          })
-          .then(res => {
-            if (res.data.length === 0) {
-              this.isEnd = true
-              resolve({
-                isEnd: true
-              })
-              this.isLoading = false
-            } else {
-              this.currentPage++
-              this.postData.push(...res.data)
-              resolve({
-                isEnd: false
-              })
-            }
-          })
-          .catch(err => {
-            console.log(err)
-            this.isLoading = false
-            reject(err)
-          })
-      })
-    }
   }
 }
 </script>

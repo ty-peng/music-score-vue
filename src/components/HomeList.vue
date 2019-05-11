@@ -7,11 +7,13 @@
     <Row>
       <i-col span="20"
              offset="2">
-        <Row type="flex"
-             justify="space-between">
-          <i-col v-for="(item, index) in scores"
-                 :key="'post-'+index">
-            <PostCard :postData="item"></PostCard>
+        <Row v-for="(scoreArr, index) in scoreArrs"
+             :key="index"
+             :gutter="10">
+          <i-col v-for="(score, index) in scoreArr"
+                 :key="index"
+                 span="6">
+            <ScoreCard :score="score"></ScoreCard>
           </i-col>
         </Row>
       </i-col>
@@ -29,11 +31,24 @@
 </template>
 
 <script>
-import PostCard from './../components/PostCard.vue'
+import ScoreCard from '../components/ScoreCard'
 export default {
   props: ['scores', 'more'],
   components: {
-    PostCard
+    ScoreCard
+  },
+  data () {
+    return {
+    }
+  },
+  computed: {
+    scoreArrs () {
+      let scoreArrs = []
+      for (let i = 0, len = this.scores.length; i < len; i += 4) {
+        scoreArrs.push(this.scores.slice(i, i + 4))
+      }
+      return scoreArrs
+    }
   }
 }
 </script>

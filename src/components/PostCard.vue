@@ -9,7 +9,7 @@
       </router-link>
     </div>
     <div class="title">
-      <router-link :to="'/details/'+ postData.id"
+      <router-link :to="'/score/'+ postData.id"
                    target="_blank">
         <h2>{{ postData.title }}</h2>
       </router-link>
@@ -111,7 +111,7 @@ export default {
   float: left;
   box-sizing: border-box;
   width: 250px;
-  margin: 0 10px 10px 0;
+  margin: 10px 10px 10px 0;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);

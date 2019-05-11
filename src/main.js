@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-import axios from 'axios'
+import api from './api'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import './assets/css/iview-theme.less'
@@ -12,7 +12,7 @@ import './assets/css/normal.css'
 
 Vue.use(iView)
 
-Vue.prototype.$http = axios
+Vue.prototype.$api = api
 Vue.prototype.$Loading = iView.LoadingBar
 Vue.prototype.$Notice = iView.Notice
 Vue.prototype.$Message = iView.Message

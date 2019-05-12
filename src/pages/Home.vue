@@ -90,7 +90,7 @@ export default {
   height 0
   padding-bottom 35%
   overflow hidden
-  border-radius 8px
+  border-radius 5px
   .carousel-item
     .pic
       width 100%

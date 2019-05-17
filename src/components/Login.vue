@@ -40,13 +40,13 @@
   </Form>
 </template>
 <script>
+import * as types from './../store/mutationType.js'
 export default {
   data () {
     return {
       loginInfo: {
         user: '',
-        password: '',
-        verifyCode: ''
+        password: ''
       },
       ruleInline: {
         user: [
@@ -68,26 +68,32 @@ export default {
       this.loading = true
       this.$refs[loginInfo].validate((valid) => {
         if (valid) {
-          this.$http.post(
-            '/api/login',
-            this.loginInfo
-          ).then(res => {
-            this.loading = false
-            if (res.data.status === 200) {
-              // 登录成功
-              this.$Message.success(res.data.msg)
-              setTimeout(() => {
-                // TODO 跳转页面
-                this.$router.push('/')
-              }, 1000)
-            } else {
-              // 登陆失败
-              this.$Message.error(res.data.msg)
-              this.verifyShow = true
-            }
-          }).catch(err => {
-            this.$Message.error('登录出错!' + err.response.message)
-          })
+          this.$api.user.login(this.loginInfo)
+            .then(res => {
+              this.loading = false
+              if (res.data.status === 200) {
+                if (res.data.data.token) {
+                  // 登录成功
+                  this.$Message.success(res.data.msg)
+                  // 存储在本地的localStograge中，可以使用cookies/local/sessionStograge
+                  this.$store.commit(types.LOGIN, res.data.data)
+                  // 跳转至其他页面
+                  setTimeout(() => {
+                    let redirect = decodeURIComponent(this.$route.query.redirect || '/')
+                    this.$router.push({
+                      path: redirect
+                    })
+                  }, 500)
+                } else {
+                  this.$Message.error('登录授权失败，请稍后重试！')
+                }
+              } else {
+                // 登录失败
+                this.$Message.error(res.data.msg)
+              }
+            }).catch(err => {
+              this.$Message.error('登录出错!' + err.response.message)
+            })
         } else {
           this.loading = false
           this.$Message.error('请正确输入帐号或密码!')

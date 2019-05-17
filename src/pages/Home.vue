@@ -20,9 +20,11 @@
       </i-col>
     </Row>
     <HomeList :scores="hotList"
-              :more="'/scores/hot'"><span slot="title">热门曲谱</span></HomeList>
+              :more="'/scores/hot'"
+              class="list"><span slot="title">热门曲谱</span></HomeList>
     <HomeList :scores="newList"
-              :more="'/scores/new'"><span slot="title">最新曲谱</span></HomeList>
+              :more="'/scores/new'"
+              class="list"><span slot="title">最新曲谱</span></HomeList>
   </main>
 </template>
 
@@ -41,7 +43,7 @@ export default {
         { id: 3, src: '/static/img/c3.jpg', target: '' }
       ],
       scoresQo: {
-        limit: 20,
+        limit: 12,
         offset: 0
       },
       newList: [],

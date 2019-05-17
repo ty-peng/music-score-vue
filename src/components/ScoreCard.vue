@@ -106,9 +106,11 @@ export default {
   margin 10px 10px 10px 0
   border-radius 5px
   overflow hidden
-  box-shadow 5px 5px 10px rgba(0, 0, 0, 0.2)
+  transition all 0.2s ease-out
+  box-shadow 0 2px 43px -4px rgba(0, 0, 0, 0.19)
 .card:hover
-  box-shadow 0 0 15px rgba(0, 0, 0, 0.3)
+  box-shadow 0 2px 5px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05)
+  transform translateY(2px)
 .thumbnail
   a
     display block

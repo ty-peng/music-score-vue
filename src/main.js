@@ -25,10 +25,24 @@ iView.Notice.config({
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
+  // title
   if (to.meta.title) {
     document.title = to.meta.title
   }
-  next()
+  // 需要登录
+  if (to.meta.requireAuth) {
+    // 已登录
+    if (store.getters.isLogin) {
+      next()
+    } else {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      })
+    }
+  } else {
+    next()
+  }
 })
 
 /* eslint-disable no-new */

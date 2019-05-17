@@ -69,7 +69,8 @@ export default new Router({
       name: 'user',
       component: User,
       meta: {
-        title: '个人中心 - 有谱'
+        title: '个人中心 - 有谱',
+        requireAuth: true
       }
     },
     {
@@ -77,7 +78,8 @@ export default new Router({
       name: 'upload',
       component: Upload,
       meta: {
-        title: '上传曲谱 - 有谱'
+        title: '上传曲谱 - 有谱',
+        requireAuth: true
       }
     },
     {
@@ -106,7 +108,8 @@ export default new Router({
       name: 'collection',
       component: Collection,
       meta: {
-        title: '我的收藏 - 有谱'
+        title: '我的收藏 - 有谱',
+        requireAuth: true
       }
     }
   ]

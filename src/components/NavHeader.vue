@@ -115,15 +115,11 @@
 </template>
 
 <script>
+import * as types from '../store/mutationType'
 export default {
   name: 'NavHeader',
   data () {
     return {
-      user: {
-        account: 'test',
-        name: '测试用户',
-        avatar: ''
-      },
       theme: 'light',
       searchType: '',
       searchTypes: [
@@ -132,25 +128,23 @@ export default {
         { value: 'ukulele', msg: '尤克里里' },
         { value: 'user', msg: '用户' }
       ],
-      isLogin: true, // TODO 状态、登录处理
       displayMenu: false,
       searchText: ''
     }
   },
   computed: {
+    user () {
+      return this.$store.state.userInfo
+    },
+    isLogin () {
+      return this.$store.getters.isLogin
+    },
     userUrl () {
       return '/user/' + this.user.account
     }
   },
   methods: {
-    toggleMenu () {
-      this.displayMenu = !this.displayMenu
-    },
-    hideMenu () {
-      this.displayMenu = false
-    },
     search () {
-      this.displayMenu = false
       if (this.searchText) {
         this.$router.push({
           name: 'search',
@@ -162,6 +156,7 @@ export default {
       }
     },
     logout () {
+      this.$store.commit(types.LOGOUT)
       this.$Message.success('退出成功！')
     }
   },
@@ -185,8 +180,9 @@ export default {
   margin-right 1em
 .header
   position fixed
-  z-index 1
+  z-index 99 // 尽可能大保持最外层
   top 0
+  left 0
   width 100%
   height 60px
   line-height 60px

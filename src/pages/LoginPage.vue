@@ -20,10 +20,12 @@ export default {
 }
 </script>
 
-<style>
-.login-card {
-  width: 450px;
-  margin: 0 auto;
-  padding: 10px;
-}
+<style lang="stylus" scoped>
+.login
+  height 550px
+.login-card
+  width 450px
+  margin 60px auto
+  padding 10px
+  box-shadow 0 2px 43px -4px rgba(0, 0, 0, 0.19)
 </style>

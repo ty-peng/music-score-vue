@@ -12,7 +12,6 @@ export default {
 
 <style lang="stylus" scoped>
 footer
-  margin-top 10px
   height 100px
   line-height 100px
   background #eeeeee

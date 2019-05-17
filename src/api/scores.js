@@ -4,6 +4,7 @@
 
 import base from './base' // 导入接口域名列表
 import axios from './http' // 导入http中创建的axios实例
+import qs from 'qs' // 根据需求是否导入qs模块（序列化）
 
 const home = {
   // 热门列表
@@ -13,6 +14,12 @@ const home = {
   // 最新列表
   newList (scoresQo) {
     return axios.post(`${base.baseUrl}/scores/new`, scoresQo)
+  },
+  // 曲谱详情
+  scoreDetail (id, params) {
+    return axios.get(`${base.baseUrl}/score/${id}`, {
+      params: params
+    })
   }
 }
 

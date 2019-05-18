@@ -5,9 +5,9 @@
         class="i-form"
         @keyup.enter.native="login('loginInfo')">
     <h1 style="text-align: center; margin-bottom: 20px">用户登录</h1>
-    <FormItem prop="user">
+    <FormItem prop="account">
       <Input type="text"
-             v-model="loginInfo.user"
+             v-model="loginInfo.account"
              placeholder="邮箱/用户名/已验证手机"
              prefix="ios-contact"
              clearable
@@ -45,11 +45,11 @@ export default {
   data () {
     return {
       loginInfo: {
-        user: '',
+        account: '',
         password: ''
       },
       ruleInline: {
-        user: [
+        account: [
           { required: true, message: '请填写帐号.', trigger: 'blur' }
         ],
         password: [
@@ -61,17 +61,17 @@ export default {
     }
   },
   methods: {
-    login (loginInfo) {
+    login (refName) {
       if (this.loading) {
         return
       }
-      this.loading = true
-      this.$refs[loginInfo].validate((valid) => {
+      this.$refs[refName].validate((valid) => {
         if (valid) {
+          this.loading = true
           this.$api.user.login(this.loginInfo)
             .then(res => {
               this.loading = false
-              if (res.data.status === 200) {
+              if (res.data.success) {
                 if (res.data.data.token) {
                   // 登录成功
                   this.$Message.success(res.data.msg)
@@ -85,13 +85,14 @@ export default {
                     })
                   }, 500)
                 } else {
-                  this.$Message.error('登录授权失败，请稍后重试！')
+                  this.$Message.error(res.data.msg)
                 }
               } else {
                 // 登录失败
                 this.$Message.error(res.data.msg)
               }
             }).catch(err => {
+              this.loading = false
               this.$Message.error('登录出错!' + err.response.message)
             })
         } else {

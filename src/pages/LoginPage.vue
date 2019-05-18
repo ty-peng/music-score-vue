@@ -5,6 +5,9 @@
       <Card class="login-card"
             :bordered="false">
         <Login></Login>
+        <router-link to="/register">
+          <p align="center">没有账号？马上注册</p>
+        </router-link>
       </Card>
     </main>
   </div>
@@ -16,6 +19,10 @@ import Login from './../components/Login.vue'
 export default {
   components: {
     Login
+  },
+  data () {
+    return {
+    }
   }
 }
 </script>

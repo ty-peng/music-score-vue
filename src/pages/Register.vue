@@ -4,6 +4,7 @@
           ref="content">
       <Card class="register-card"
             :bordered="false">
+        <h1 align="center">用户注册</h1>
         <Form ref="registerInfo"
               :model="registerInfo"
               :rules="registerRule"
@@ -135,9 +136,9 @@ export default {
     }
     const validatePhone = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error('手机号不能为空'))
-      }
-      if (!/^1[34578]\d{9}$/.test(value)) {
+        // return callback(new Error('手机号不能为空'))
+        return callback()
+      } else if (!/^1[34578]\d{9}$/.test(value)) {
         return callback(new Error('手机号格式不正确'))
       }
       this.$api.user.checkAccount({ account: value, type: 'phone' })
@@ -151,7 +152,8 @@ export default {
     }
     const validateEmail = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error('邮箱不能为空'))
+        // return callback(new Error('邮箱不能为空'))
+        return callback()
       }
       this.$api.user.checkAccount({ account: value, type: 'email' })
         .then(res => {
@@ -177,14 +179,14 @@ export default {
           { required: true, validator: validateAccount, trigger: 'blur' }
         ],
         phone: [
-          { required: true, validator: validatePhone, trigger: 'blur' }
+          { validator: validatePhone, trigger: 'blur' }
         ],
         email: [
-          { required: true, type: 'email', message: '邮箱格式不正确', trigger: 'blur' },
+          { type: 'email', message: '邮箱格式不正确', trigger: 'blur' },
           { validator: validateEmail, trigger: 'blur' }
         ],
         name: [
-          { required: true, type: 'string', message: '请输入昵称', trigger: 'blur' }
+          { type: 'string', message: '请输入昵称', trigger: 'blur' }
         ],
         password: [
           { required: true, validator: validatePass, trigger: 'blur' }
@@ -238,5 +240,5 @@ export default {
   box-shadow 0 2px 43px -4px rgba(0, 0, 0, 0.19)
 .form
   width 360px
-  margin 0 auto
+  margin 10px auto
 </style>

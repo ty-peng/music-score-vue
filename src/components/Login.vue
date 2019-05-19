@@ -8,7 +8,7 @@
     <FormItem prop="account">
       <Input type="text"
              v-model="loginInfo.account"
-             placeholder="邮箱/用户名/已验证手机"
+             placeholder="用户名/已验证手机/邮箱"
              prefix="ios-contact"
              clearable
              autofocus
@@ -21,9 +21,7 @@
              prefix="ios-lock"
              clearable
              size="large" />
-      <a href="#">
-        <p style="text-align: right;">忘记密码</p>
-      </a>
+      <p style="float: right"><a href="#">忘记密码</a></p>
     </FormItem>
     <!-- TODO 滑动验证 -->
     <FormItem>
@@ -50,10 +48,10 @@ export default {
       },
       ruleInline: {
         account: [
-          { required: true, message: '请填写帐号.', trigger: 'blur' }
+          { required: true, message: '请输入账号.', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请填写密码.', trigger: 'blur' },
+          { required: true, message: '请输入密码.', trigger: 'blur' },
           { type: 'string', min: 6, message: '密码不能少于6位', trigger: 'blur' }
         ]
       },

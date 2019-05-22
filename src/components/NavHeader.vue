@@ -12,10 +12,10 @@
           </router-link>
         </h1>
       </div>
-      <div class="rec fl">
-        <router-link to="/scores/hot"><span>热门</span></router-link>
-        <router-link to="/scores/recommend"><span>推荐</span></router-link>
-        <router-link to="/scores/new"><span>最新</span></router-link>
+      <div class="rec fl"
+           v-if="this.$route.path === '/'">
+        <a href="#hot"><span>热门</span></a>
+        <a href="#new"><span>最新</span></a>
       </div>
       <div class="me fr">
         <div v-if="isLogin">
@@ -83,6 +83,7 @@
             <Option v-for="(item, key) in searchTypes"
                     :value="item.value"
                     :key="key">{{item.msg}}</Option>
+            <Option value="user">用户</Option>
           </Select>
         </i-input>
       </div>
@@ -100,14 +101,10 @@
             <Icon type="ios-musical-notes" />
             曲谱库
           </template>
-          <MenuItem name="3-1"
-                    to="/scores/piano">钢琴</MenuItem>
-          <MenuItem name="3-2"
-                    to="/scores/guitar">吉他</MenuItem>
-          <MenuItem name="3-3"
-                    to="/scores/ukulele">尤克里里</MenuItem>
-          <MenuItem name="3-4"
-                    to="/scores/all">其他</MenuItem>
+          <MenuItem :name="'3-' + index"
+                    :to="'/scores/' + item.value"
+                    v-for="(item, index) in scoresTypes"
+                    :key="index">{{item.msg}}</MenuItem>
         </Submenu>
       </div>
     </Menu>
@@ -115,20 +112,14 @@
 </template>
 
 <script>
-import * as types from '../store/mutationType'
+import * as mutationTypes from '../store/mutationType'
+import { TYPES } from '../enums/enums'
 export default {
   name: 'NavHeader',
   data () {
     return {
       theme: 'light',
       searchType: '',
-      searchTypes: [
-        { value: 'piano', msg: '钢琴' },
-        { value: 'guitar', msg: '吉他' },
-        { value: 'ukulele', msg: '尤克里里' },
-        { value: 'user', msg: '用户' }
-      ],
-      displayMenu: false,
       searchText: ''
     }
   },
@@ -141,7 +132,25 @@ export default {
     },
     userUrl () {
       return '/user/' + this.user.account
+    },
+    scoresTypes () {
+      let result = []
+      for (var key in TYPES) {
+        if (TYPES.hasOwnProperty(key)) {
+          result.push({
+            value: key,
+            msg: TYPES[key]
+          })
+        }
+      }
+      return result
+    },
+    searchTypes () {
+      return this.scoresTypes
     }
+  },
+  mounted () {
+    this.searchType = this.searchTypes[0].value
   },
   methods: {
     search () {
@@ -156,12 +165,9 @@ export default {
       }
     },
     logout () {
-      this.$store.commit(types.LOGOUT)
+      this.$store.commit(mutationTypes.LOGOUT)
       this.$Message.success('退出成功！')
     }
-  },
-  mounted () {
-    this.searchType = this.searchTypes[0].value
   }
 }
 </script>

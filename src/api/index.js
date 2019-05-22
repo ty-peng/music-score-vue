@@ -3,9 +3,11 @@
  */
 import home from '@/api/home'
 import user from '@/api/user'
+import scores from '@/api/scores'
 
 // 导出接口
 export default {
   home,
-  user
+  user,
+  scores
 }

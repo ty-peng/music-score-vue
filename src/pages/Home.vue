@@ -20,18 +20,22 @@
       </i-col>
     </Row>
     <HomeList :scores="hotList"
-              :more="'/scores/hot'"
-              class="list"><span slot="title">热门曲谱</span></HomeList>
+              :more="'/scores/piano'"
+              class="list">
+      <span slot="title"
+            id="hot">热门曲谱</span>
+    </HomeList>
     <HomeList :scores="newList"
-              :more="'/scores/new'"
-              class="list"><span slot="title">最新曲谱</span></HomeList>
+              :more="'/scores/piano'"
+              class="list">
+      <span slot="title"
+            id="new">最新曲谱</span>
+    </HomeList>
   </main>
 </template>
 
 <script>
-
 import HomeList from './../components/HomeList'
-
 export default {
   name: 'home',
   data () {
@@ -43,6 +47,7 @@ export default {
         { id: 3, src: '/static/img/c3.jpg', target: '' }
       ],
       scoresQo: {
+        type: 'piano',
         limit: 12,
         offset: 0
       },
@@ -57,11 +62,13 @@ export default {
     }
   },
   mounted () {
-    this.getList()
+    this.getHotList()
+    this.getNewList()
+    this.$Loading.finish()
   },
   methods: {
-    getList () {
-      this.$api.home.hotList(this.scoresQo)
+    getHotList () {
+      this.$api.home.loadHotList(this.scoresQo)
         .then(res => {
           if (!res.data.success) {
             this.$Message.error(res.data.msg)
@@ -69,7 +76,9 @@ export default {
           }
           this.hotList = res.data.data
         })
-      this.$api.home.newList(this.scoresQo)
+    },
+    getNewList () {
+      this.$api.home.loadNewList(this.scoresQo)
         .then(res => {
           if (!res.data.success) {
             this.$Message.error(res.data.msg)
@@ -77,7 +86,6 @@ export default {
           }
           this.newList = res.data.data
         })
-      this.$Loading.finish()
     }
   },
   components: {

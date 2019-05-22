@@ -11,6 +11,8 @@ import LoginPage from '@/pages/LoginPage'
 import Register from '@/pages/Register'
 import User from '@/pages/User'
 import Upload from '@/pages/Upload'
+import ScoresList from '@/components/ScoresList'
+import NotFound from '@/pages/NotFound'
 
 Vue.use(Router)
 
@@ -25,12 +27,33 @@ export default new Router({
       }
     },
     {
-      path: '/scores/:type',
-      name: 'scores',
+      path: '/scores',
       component: Scores,
       meta: {
         title: '谱库 - 有谱'
-      }
+      },
+      children: [
+        {
+          path: 'piano',
+          name: 'piano',
+          component: ScoresList,
+          meta: {
+            title: '钢琴曲谱'
+          }
+        },
+        {
+          path: 'guitar',
+          component: ScoresList
+        },
+        {
+          path: 'ukulele',
+          component: ScoresList
+        },
+        {
+          path: '',
+          redirect: 'piano'
+        }
+      ]
     },
     {
       path: '/details/:id',
@@ -111,6 +134,11 @@ export default new Router({
         title: '我的收藏 - 有谱',
         requireAuth: true
       }
+    },
+    {
+      path: '*',
+      name: '404',
+      component: NotFound
     }
   ]
 })

@@ -4,7 +4,7 @@
     <div class="thumbnail">
       <router-link :to="'/score/'+ score.id"
                    target="_blank">
-        <img :src="score.thumbnail"
+        <img :src="score.img"
              :alt="score.title"
              @error="imgError">
       </router-link>
@@ -24,7 +24,7 @@
           {{ score.artist }}
         </router-link>
       </span>
-      <router-link :to="'/score/'+ score.id"
+      <router-link :to="'/details/'+ score.id"
                    target="_blank">
         <span class="date fr">
           <Icon type="md-time" />
@@ -37,14 +37,14 @@
         <router-link :to="'/scores/'+ type"
                      target="_blank">
           <Icon type="ios-list-box-outline" />
-          {{ score.typeName }}
+          {{ typeName }}
         </router-link>
       </span>
       <router-link :to="'/score/'+ score.id"
                    target="_blank">
         <span class="collections fr">
           <Icon type="md-star-outline" />
-          {{ score.collections ? score.collections : 0 }}
+          {{ score.collects ? score.collects : 0 }}
         </span>
         <span class="views fr">
           <Icon type="ios-eye-outline" />
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { TYPES, BACKTYPES } from '../enums/enums'
 export default {
   name: 'ScoreCard',
   props: ['score'],
@@ -65,7 +66,7 @@ export default {
   },
   computed: {
     date () {
-      let dateObj = new Date(Date.parse(this.score.date.replace(/-/g, '/')))
+      let dateObj = new Date(Date.parse(this.score.uploadDatetime.replace(/-/g, '/')))
       let y = dateObj.getFullYear()
       let m = dateObj.getMonth() + 1
       m = m < 10 ? '0' + m : m
@@ -74,24 +75,30 @@ export default {
       return y + '-' + m + '-' + d
     },
     title () {
-      return this.score.title + ' ' + (this.score.author ? this.score.author : '')
+      return this.score.title + '-' + (this.score.artist ? this.score.artist : '')
     },
     type () {
-      switch (this.score.type) {
-        case 1:
-          return 'piano'
-        case 2:
-          return 'guitar'
-        case 3:
-          return 'ukulele'
-        default:
-          return 'all'
+      for (var key in BACKTYPES) {
+        if (BACKTYPES.hasOwnProperty(key)) {
+          if (BACKTYPES[key] === this.score.type) {
+            return key
+          }
+        }
+      }
+    },
+    typeName () {
+      for (var key in TYPES) {
+        if (TYPES.hasOwnProperty(key)) {
+          if (key === this.type) {
+            return TYPES[key] + '曲谱'
+          }
+        }
       }
     }
   },
   methods: {
     imgError (e) {
-      this.score.thumbnail =
+      this.score.img =
         'http://iph.href.lu/235x200?text=%20&fg=f8f8f9&bg=f8f8f9'
       e.target.onerror = null
     }

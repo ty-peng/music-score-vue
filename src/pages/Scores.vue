@@ -132,6 +132,7 @@ export default {
     },
     changePageSize (pageSize) {
       this.scoresQo.limit = pageSize
+      this.loadList()
     }
   }
 }

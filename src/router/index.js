@@ -43,10 +43,12 @@ export default new Router({
         },
         {
           path: 'guitar',
+          name: 'guitar',
           component: ScoresList
         },
         {
           path: 'ukulele',
+          name: 'ukulele',
           component: ScoresList
         },
         {

@@ -31,18 +31,22 @@
       </span>
     </nav>
     <router-view :scores="scores"></router-view>
-    <Page :total="100"
+    <Page :total="total"
           size="small"
           show-elevator
           show-sizer
           show-total
-          align="center" />
+          align="center"
+          :current="scoresQo.page"
+          :page-size="scoresQo.limit"
+          @on-change="changePage"
+          @on-page-size-change="changePageSize" />
   </div>
 </template>
 
 <script>
 import ScoresList from './../components/ScoresList'
-import { TYPES } from '../enums/enums'
+import { TYPES, BACKTYPES } from '../enums/enums'
 export default {
   components: {
     ScoresList
@@ -52,20 +56,29 @@ export default {
       theme: 'light',
       scoresQo: {
         cate: 'hot',
-        type: this.type,
-        limit: 10,
-        offset: 0
+        type: null,
+        page: 1,
+        offset: 0,
+        limit: 10
       },
-      scores: [{ aaa: 'aaa' }]
+      scores: [{}],
+      total: null
     }
   },
   computed: {
     type () {
-      let type = this.$route.path
-      return type.substring(type.lastIndexOf('/') + 1, type.length)
+      let type = this.$route.name
+      for (var key in BACKTYPES) {
+        if (BACKTYPES.hasOwnProperty(key)) {
+          if (key === type) {
+            return BACKTYPES[key]
+          }
+        }
+      }
+      return 0
     },
     typeName () {
-      return TYPES[this.type]
+      return TYPES[this.$route.name]
     },
     types () {
       let result = []
@@ -78,9 +91,14 @@ export default {
         }
       }
       return result
+    },
+    allPages () {
+      const allPage = Math.ceil(this.total / this.scoresQo.limit)
+      return (allPage === 0) ? 1 : allPage
     }
   },
   mounted () {
+    this.scoresQo.type = this.type
     this.loadList('hot')
     if (this.$route.params.cate) {
       console.log(this.$route.params.cate)
@@ -88,15 +106,32 @@ export default {
   },
   methods: {
     loadList (cate) {
-      this.scoresQo.cate = cate
+      if (cate) {
+        this.scoresQo.cate = cate
+      } else {
+        this.scoresQo.cate = this.$route.name
+      }
       this.$api.scores.loadList(this.scoresQo)
         .then(res => {
           if (res.data.success) {
+            this.total = res.data.total
             this.scores = res.data.data
           } else {
             this.$Message.error(res.data.msg)
           }
         })
+    },
+    changePage (page) {
+      const allPages = this.allPages
+      if (page > allPages) {
+        page = allPages
+      }
+      this.scoresQo.page = page
+      this.scoresQo.offset = (page - 1) * this.scoresQo.limit
+      this.loadList()
+    },
+    changePageSize (pageSize) {
+      this.scoresQo.limit = pageSize
     }
   }
 }

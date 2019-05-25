@@ -19,24 +19,24 @@
       </div>
       <div class="me fr">
         <div v-if="isLogin">
-          <router-link :to="userUrl">
+          <router-link to="/account">
             <Avatar style="background-color: #87d068;margin-left: 5px"
                     icon="ios-person"
                     :src="user.avatar" />
           </router-link>
           <Dropdown>
             <a href="javascript:void(0)">
-              <h3>{{user.name}}
+              <h3>{{user.nickName}}
                 <Icon type="ios-arrow-down"></Icon>
               </h3>
             </a>
             <DropdownMenu slot="list">
-              <router-link :to="userUrl">
+              <router-link to="/account">
                 <DropdownItem>
                   <Icon type="md-person"
                         size="15" />&nbsp;个人中心</DropdownItem>
               </router-link>
-              <router-link :to="userUrl + '/collection'">
+              <router-link to="/account/collection'">
                 <DropdownItem>
                   <Icon type="ios-star-outline"
                         size="15" />&nbsp;我的收藏
@@ -88,14 +88,18 @@
         </i-input>
       </div>
       <div class="fr">
-        <MenuItem name="1"
-                  to="/tutorial">
-        教程
-        </MenuItem>
-        <MenuItem name="2"
-                  to="/video">
-        视频
-        </MenuItem>
+        <a target="_blank"
+           href="https://www.musicbody.net/music-course-list.html">
+          <MenuItem name="1">
+          教程
+          </MenuItem>
+        </a>
+        <a target="_blank"
+           href="http://www.tan8.com/club-1-1-1-1-0.html">
+          <MenuItem name="2">
+          视频
+          </MenuItem>
+        </a>
         <Submenu name="3">
           <template slot="title">
             <Icon type="ios-musical-notes" />
@@ -129,9 +133,6 @@ export default {
     },
     isLogin () {
       return this.$store.getters.isLogin
-    },
-    userUrl () {
-      return '/user/' + this.user.account
     },
     scoresTypes () {
       let result = []
@@ -186,7 +187,7 @@ export default {
   margin-right 1em
 .header
   position fixed
-  z-index 99 // 尽可能大保持最外层
+  z-index 99999 // 尽可能大保持最外层
   top 0
   left 0
   width 100%

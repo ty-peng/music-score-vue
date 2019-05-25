@@ -87,13 +87,7 @@ export default {
       }
     },
     typeName () {
-      for (var key in TYPES) {
-        if (TYPES.hasOwnProperty(key)) {
-          if (key === this.type) {
-            return TYPES[key] + '曲谱'
-          }
-        }
-      }
+      return (TYPES[this.type] ? TYPES[this.type] : '未知') + '曲谱'
     }
   },
   methods: {

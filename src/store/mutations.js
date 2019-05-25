@@ -19,5 +19,10 @@ export default {
     state.token = null
     localStorage.removeItem('userInfo')
     state.userInfo = null
+  },
+  [types.UPDATE_USER]: (state, data) => {
+    let user = qs.stringify(data) // 要转化成String
+    localStorage.userInfo = user
+    state.userInfo = data
   }
 }

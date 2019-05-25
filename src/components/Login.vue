@@ -72,7 +72,7 @@ export default {
               if (res.data.success) {
                 if (res.data.data.token) {
                   // 登录成功
-                  this.$Message.success(res.data.msg)
+                  this.$Message.success('登录成功！')
                   // 存储在本地的localStograge中，可以使用cookies/local/sessionStograge
                   this.$store.commit(types.LOGIN, res.data.data)
                   // 跳转至其他页面

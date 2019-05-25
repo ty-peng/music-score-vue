@@ -68,17 +68,10 @@ export default {
   computed: {
     type () {
       let type = this.$route.name
-      for (var key in BACKTYPES) {
-        if (BACKTYPES.hasOwnProperty(key)) {
-          if (key === type) {
-            return BACKTYPES[key]
-          }
-        }
-      }
-      return 0
+      return BACKTYPES[type] ? BACKTYPES[type] : 0
     },
     typeName () {
-      return TYPES[this.$route.name]
+      return TYPES[this.$route.name] ? TYPES[this.$route.name] : '未知'
     },
     types () {
       let result = []
@@ -97,12 +90,14 @@ export default {
       return (allPage === 0) ? 1 : allPage
     }
   },
+  watch: {
+    typeName () {
+      this.loadList()
+    }
+  },
   mounted () {
     this.scoresQo.type = this.type
     this.loadList('hot')
-    if (this.$route.params.cate) {
-      console.log(this.$route.params.cate)
-    }
   },
   methods: {
     loadList (cate) {

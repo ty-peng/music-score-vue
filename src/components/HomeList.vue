@@ -4,18 +4,14 @@
         class="sec-title">
       <slot name="title"></slot>
     </h1>
-    <Row>
-      <i-col span="20"
-             offset="2">
-        <Row v-for="(scoreArr, index) in scoreArrs"
+    <Row v-for="(scoreArr, index) in scoreArrs"
+         :key="index"
+         :gutter="10">
+      <i-col v-for="(score, index) in scoreArr"
              :key="index"
-             :gutter="10">
-          <i-col v-for="(score, index) in scoreArr"
-                 :key="index"
-                 span="6">
-            <ScoreCard :score="score"></ScoreCard>
-          </i-col>
-        </Row>
+             span="5"
+             :offset="index === 0 ? 2 : 0">
+        <ScoreCard :score="score"></ScoreCard>
       </i-col>
     </Row>
     <Row>

@@ -9,3 +9,8 @@ export const BACKTYPES = {
   guitar: 2,
   ukulele: 3
 }
+
+export const SEX = {
+  '0': '女',
+  '1': '男'
+}

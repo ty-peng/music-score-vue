@@ -191,5 +191,13 @@ export default new Router({
       name: '404',
       component: NotFound
     }
-  ]
+  ],
+  // 让页面滚动到顶部
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  }
 })

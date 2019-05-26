@@ -19,7 +19,7 @@
       </div>
       <div class="me fr">
         <div v-if="isLogin">
-          <router-link to="/account">
+          <router-link to="/account/info">
             <Avatar style="background-color: #87d068;margin-left: 5px"
                     icon="ios-person"
                     :src="user.avatar" />
@@ -31,12 +31,12 @@
               </h3>
             </a>
             <DropdownMenu slot="list">
-              <router-link to="/account">
+              <router-link to="/account/info">
                 <DropdownItem>
                   <Icon type="md-person"
                         size="15" />&nbsp;个人中心</DropdownItem>
               </router-link>
-              <router-link to="/account/collection'">
+              <router-link to="/account/collection">
                 <DropdownItem>
                   <Icon type="ios-star-outline"
                         size="15" />&nbsp;我的收藏

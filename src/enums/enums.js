@@ -14,3 +14,8 @@ export const SEX = {
   '0': '女',
   '1': '男'
 }
+
+export const UPDATE_TYPE = {
+  userInfo: 0,
+  userSetting: 1
+}

@@ -88,7 +88,7 @@
 
 <script>
 import * as types from './../store/mutationType.js'
-import { SEX } from './../enums/enums'
+import { SEX, UPDATE_TYPE } from './../enums/enums'
 export default {
   data () {
     return {
@@ -133,6 +133,7 @@ export default {
           if (valid) {
             this.loading = true
             this.updatedUserInfo.id = this.userInfo.id
+            this.updatedUserInfo.updateType = UPDATE_TYPE['userInfo']
             this.$api.user.updateUser(this.updatedUserInfo)
               .then(res => {
                 this.loading = false

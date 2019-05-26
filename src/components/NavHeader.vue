@@ -187,7 +187,7 @@ export default {
   margin-right 1em
 .header
   position fixed
-  z-index 99999 // 尽可能大保持最外层
+  z-index 999 // 尽可能大保持最外层
   top 0
   left 0
   width 100%

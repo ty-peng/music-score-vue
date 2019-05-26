@@ -87,8 +87,7 @@
       </FormItem>
       <FormItem label="新密码"
                 prop="newPassword">
-        <Poptip trigger="focus"
-                class="poptip">
+        <Tooltip>
           <Input type="password"
                  clearable
                  style="width: 280px"
@@ -99,7 +98,7 @@
               可包含特殊字符：!@#$%^&amp;*?,.<br />
               例如：asgAsGasg.1956153</p>
           </div>
-        </Poptip>
+        </Tooltip>
       </FormItem>
       <FormItem label="确认密码"
                 prop="repeatPassword">
@@ -129,10 +128,12 @@ export default {
         callback(new Error('请输入密码'))
       } else if (!/^.*(?=.{6,16})(?=.*\d)(?=.*[A-Za-z]{1,})(?=[!@#$%^&*?,.]*).*$/.test(value)) {
         callback(new Error('密码格式不正确'))
+      } else if (value === this.passwordSetting.password) {
+        return callback(new Error('新密码与原密码相同'))
       } else {
-        if (this.userSettingInfo.passwordCheck !== '') {
+        if (this.passwordSetting.repeatPassword !== '') {
           // 对第二个密码框单独验证
-          this.$refs.userSettingInfo.validateField('passwordCheck')
+          this.$refs.passwordSetting.validateField('repeatPassword')
         }
         callback()
       }
@@ -140,7 +141,7 @@ export default {
     const validateRepeatPass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请确认密码'))
-      } else if (value !== this.userSettingInfo.password) {
+      } else if (value !== this.passwordSetting.newPassword) {
         callback(new Error('两次输入的密码不一致!'))
       } else {
         callback()
@@ -152,6 +153,9 @@ export default {
         return callback()
       } else if (!/^1[34578]\d{9}$/.test(value)) {
         return callback(new Error('手机号格式不正确'))
+      }
+      if (value === this.phoneSetting.phone) {
+        return callback(new Error('新手机号与原手机号相同'))
       }
       this.$api.user.checkAccount({ account: value, type: 'phone' })
         .then(res => {
@@ -167,6 +171,9 @@ export default {
         // return callback(new Error('邮箱不能为空'))
         return callback()
       }
+      if (value === this.emailSetting.email) {
+        return callback(new Error('新邮箱与原邮箱相同'))
+      }
       this.$api.user.checkAccount({ account: value, type: 'email' })
         .then(res => {
           if (res.data.data.exist) {
@@ -179,22 +186,19 @@ export default {
     return {
       loading: false,
       phoneSetting: {
-        id: this.userId,
         password: '',
         phone: '',
         newPhone: ''
       },
       emailSetting: {
-        id: this.userId,
         password: '',
         email: '',
         newEmail: ''
       },
       passwordSetting: {
-        id: this.userId,
         password: '',
-        repeatPassword: '',
-        newPassword: ''
+        newPassword: '',
+        repeatPassword: ''
       },
       phoneSettingRule: {
         password: [
@@ -222,7 +226,7 @@ export default {
       },
       passwordSettingRule: {
         password: [
-          { required: true, validator: validatePass, trigger: 'blur' }
+          { required: true, type: 'string', message: '请输入密码', trigger: 'blur' }
         ],
         newPassword: [
           { required: true, validator: validatePass, trigger: 'blur' }
@@ -258,6 +262,7 @@ export default {
               updatedUserSetting = null
               break
           }
+          updatedUserSetting.id = this.userId
           updatedUserSetting.updateType = UPDATE_TYPE['userSetting']
           this.$api.user.updateUser(updatedUserSetting)
             .then(res => {
@@ -273,7 +278,7 @@ export default {
               this.$Message.error('修改出错!' + err.response.message)
             })
         } else {
-          this.$Message.error('请正确填写用户信息!')
+          this.$Message.error('请正确填写账号设置信息!')
         }
       })
     }

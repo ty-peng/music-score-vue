@@ -19,3 +19,10 @@ export const UPDATE_TYPE = {
   userInfo: 0,
   userSetting: 1
 }
+
+export const SEARCH_TYPES = {
+  user: 0,
+  piano: 1,
+  guitar: 2,
+  ukulele: 3
+}

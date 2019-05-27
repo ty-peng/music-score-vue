@@ -1,134 +1,113 @@
 <template>
-  <div class="search">
-    <main class="content"
-          ref="content">
-      <div class="sec-1">
-        <h2>“{{ kw }}”的搜索结果</h2>
-      </div>
-      <div class="sec-2 expand-width clearfix">
-        <PostCard v-for="(item, index) in postData"
-                  :postData="item"
-                  :key="'post-'+index"></PostCard>
-        <Loading :isLoading="isLoading"
-                 :isEnd="isEnd"></Loading>
-      </div>
-    </main>
-  </div>
+  <main class="search">
+    <div class="sec-1">
+      <h2>“{{ keywords }}” 的搜索结果</h2>
+    </div>
+    <div class="sec-2 clearfix">
+      <ScoresList :scores="scores"></ScoresList>
+      <Page :total="total"
+            size="small"
+            show-elevator
+            show-sizer
+            show-total
+            align="center"
+            :current="scoresQo.page"
+            :page-size="scoresQo.limit"
+            @on-change="changePage"
+            @on-page-size-change="changePageSize" />
+    </div>
+  </main>
 </template>
 
 <script>
-import PostCard from './../components/PostCard.vue'
-import Loading from './../components/Loading.vue'
-import infiniteScroll from './../assets/js/infinite-scroll.js'
-
+import ScoresList from './../components/ScoresList'
+import { SEARCH_TYPES } from '../enums/enums'
 export default {
-  name: 'Home',
-  created () {
-    this.$Loading.start()
-    this.kw = this.$route.query.kw
-  },
-  mounted () {
-    this.getData()
-      .then(res => {
-        this.$Loading.finish()
-      })
-      .catch(err => {
-        this.$Loading.error()
-        console.log(err)
-      })
-
-    infiniteScroll(this.$refs.content, 200, this.getMoreData, this.isEnd)
+  components: {
+    ScoresList
   },
   data () {
     return {
-      kw: '',
-      currentPage: 1,
-      postData: [],
-      isEnd: false,
-      isLoading: false
+      scoresQo: {
+        kw: null,
+        cate: 'hot',
+        searchType: null,
+        page: 1,
+        offset: 0,
+        limit: 10
+      },
+      scores: [{}],
+      total: null
     }
   },
-  components: {
-    PostCard,
-    Loading
+  computed: {
+    keywords () {
+      return this.$route.query.kw
+    },
+    searchType () {
+      return this.transType(this.$route.query.type)
+    },
+    allPages () {
+      const allPage = Math.ceil(this.total / this.scoresQo.limit)
+      return (allPage === 0) ? 1 : allPage
+    }
+  },
+  created () {
+    this.$Loading.start()
+  },
+  mounted () {
+    this.searchScores()
   },
   watch: {
     $route (to, from) {
       this.$Loading.start()
-      this.currentPage = 1
-      this.kw = this.$route.query.kw
-      this.getData()
-        .then(res => {
-          this.$Loading.finish()
-        })
-        .catch(err => {
-          this.$Loading.error()
-          console.log(err)
-        })
-      infiniteScroll(this.$refs.content, 200, this.getMoreData, this.isEnd)
-    },
-    isEnd () {
-      if (this.isEnd) {
-        infiniteScroll(this.$refs.content, 200, this.getMoreData, this.isEnd)
-      }
+      this.searchScores()
     }
   },
   methods: {
-    getData () {
-      return new Promise((resolve, reject) => {
-        this.$http
-          .post('/search', {
-            kw: this.kw,
-            currentPage: this.currentPage
-          })
-          .then(res => {
-            if (res.data.length === 0) {
-              this.isEnd = true
-              resolve()
-            } else {
-              this.currentPage++
-              this.postData = res.data
-              resolve()
-            }
-          })
-          .catch(err => {
-            console.log(err)
-            reject(err)
-          })
-      })
+    searchScores (cate) {
+      if (cate) {
+        this.scoresQo.cate = cate
+      } else {
+        this.scoresQo.cate = 'hot'
+      }
+      this.scoresQo.kw = this.keywords
+      this.scoresQo.searchType = this.searchType
+      this.$api.scores.loadList(this.scoresQo)
+        .then(res => {
+          if (res.data.success) {
+            this.$Loading.finish()
+            this.total = res.data.total
+            this.scores = res.data.data
+          } else {
+            this.$Loading.error()
+            this.$Message.error(res.data.msg)
+          }
+        })
     },
-    getMoreData () {
-      return new Promise((resolve, reject) => {
-        this.isLoading = true
-        this.$http
-          .post('/search', {
-            kw: this.kw,
-            currentPage: this.currentPage
-          })
-          .then(res => {
-            if (res.data.length === 0) {
-              this.isEnd = true
-              resolve()
-              this.isLoading = false
-            } else {
-              this.currentPage++
-              this.postData.push(...res.data)
-              resolve()
-            }
-          })
-          .catch(err => {
-            this.isLoading = false
-            console.log(err)
-            reject(err)
-          })
-      })
+    transType (searchType) {
+      return SEARCH_TYPES[searchType] ? SEARCH_TYPES[searchType] : null
+    },
+    changePage (page) {
+      const allPages = this.allPages
+      if (page > allPages) {
+        page = allPages
+      }
+      this.scoresQo.page = page
+      this.scoresQo.offset = (page - 1) * this.scoresQo.limit
+      this.searchScores()
+    },
+    changePageSize (pageSize) {
+      this.scoresQo.limit = pageSize
+      this.searchScores()
     }
   }
 }
 </script>
 
-<style scoped>
-.sec-2 {
-  margin-right: -10px;
-}
+<style lang="stylus" scoped>
+.search
+  width 1200px
+  margin 20px auto
+  padding 20px 80px
 </style>

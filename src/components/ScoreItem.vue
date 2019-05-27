@@ -37,7 +37,7 @@ export default {
 
 <style lang="stylus" scoped>
 li
-  padding 20px
+  padding 10px 20px
 li:hover
   background #fafafa url('http://www.tan8.com/static/yupu20160506/images/play.png') 850px center no-repeat
 .l-img

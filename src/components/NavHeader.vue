@@ -83,7 +83,7 @@
             <Option v-for="(item, key) in searchTypes"
                     :value="item.value"
                     :key="key">{{item.msg}}</Option>
-            <Option value="user">用户</Option>
+            <!-- <Option value="user">用户</Option> -->
           </Select>
         </i-input>
       </div>
@@ -159,7 +159,8 @@ export default {
         this.$router.push({
           name: 'search',
           query: {
-            kw: this.searchText
+            kw: this.searchText,
+            type: this.searchType
           }
         })
         this.searchText = ''

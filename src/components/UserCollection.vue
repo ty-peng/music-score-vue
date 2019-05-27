@@ -1,41 +1,56 @@
 <template>
-  <div class="search">
-    <main class="content">
+  <div class="userCollection">
+    <div class="content">
       <div class="sec-1 clearfix">
         <h2 class="fl">我的收藏</h2>
-        <div class="admin-group fr">
-          <div class="admin-opt"
-               :class="showAdmin ? '' : 'hide'">
-            <Checkbox :value="checkAll"
+        <div class="manage-group fr">
+          <div class="manage-opt"
+               :class="showManage ? '' : 'hide'">
+            <Checkbox :indeterminate="indeterminate"
+                      :value="checkAll"
                       @click.prevent.native="handleCheckAll">全选</Checkbox>
-            <Button class="btn btn-admin fr"
+            <Button class="btn btn-manage fr"
                     type="error"
                     @click="handleDelete">删除</Button>
           </div>
-          <Button class="btn btn-admin"
-                  @click="handleAdmin">{{ adminText }}</Button>
+          <Button class="btn btn-manage"
+                  @click="handleManage">{{ manageText }}</Button>
         </div>
       </div>
       <div class="sec-2 clearfix">
-        <ul class="collection-list">
-          <li class="collection-item clearfix"
-              v-for="(item, index) in collectionData"
-              :key="item.id">
-            <Checkbox class="fl"
-                      :class="showAdmin ? '' : 'hide'"
-                      :value="checkGroup[index]"
-                      @click.prevent.native="handleCheck(index, item.id)" />
-            <h3 class="title fl">
-              <router-link :to="'/details/' + item.id">{{ item.title }}</router-link>
-            </h3>
-            <router-link :to="'/cate/' + item.cate"
-                         class="cate fr">{{ item.source }}</router-link>
-          </li>
-        </ul>
+        <CheckboxGroup v-model="checkedIds"
+                       @on-change="checkedIdsChange">
+          <ul class="collection-list">
+            <li class="collection-item clearfix"
+                v-for="(item, index) in collections"
+                :key="index">
+              <Checkbox class="fl"
+                        v-show="showManage"
+                        :label="item.id">&nbsp;</Checkbox>
+              <h3 class="title fl">
+                <Icon type="ios-musical-note" />
+                <router-link :to="'/details/' + item.scoreId">{{ item.title + ' - ' + item.artist }}</router-link>
+              </h3>
+              <router-link :to="'/scores/' + transType(item.type)"
+                           class="type fr">{{ transTypeName(item.type) }}</router-link>
+            </li>
+          </ul>
+        </CheckboxGroup>
       </div>
-    </main>
+      <Page :total="total"
+            size="small"
+            show-elevator
+            show-sizer
+            show-total
+            v-show="collections.length !== 0"
+            align="center"
+            :current="pageQo.page"
+            :page-size="pageQo.limit"
+            @on-change="changePage"
+            @on-page-size-change="changePageSize" />
+    </div>
     <div class="no-data"
-         v-if="collectionData.length === 0">
+         v-if="collections.length === 0">
       暂无数据，
       <router-link to="/">快去收藏吧(oﾟvﾟ)ノ GO >></router-link>
     </div>
@@ -47,109 +62,148 @@
         <span>删除确认</span>
       </p>
       <div style="text-align:center">
-        <p>您确定要删除所选择的{{ checkedId.length }}条记录吗？</p>
+        <p>您确定要删除所选择的{{ checkedIds.length }}条记录吗？</p>
       </div>
       <div slot="footer">
         <Button type="error"
                 size="large"
                 long
-                @click="delAll">删除</Button>
+                @click="delChecked">删除</Button>
       </div>
     </Modal>
   </div>
 </template>
 
 <script>
-import PostCard from './../components/PostCard.vue'
-import infiniteScroll from './../assets/js/infinite-scroll.js'
-
+import { TYPES, BACKTYPES } from '../enums/enums'
 export default {
-  name: 'Home',
+  data () {
+    return {
+      kw: '',
+      pageQo: {
+        page: 1,
+        offset: 0,
+        limit: 10
+      },
+      total: null,
+      indeterminate: true,
+      checkAll: false,
+      checkedIds: [],
+      collections: [],
+      showDelModal: false,
+      showManage: false,
+      manageText: '管理'
+    }
+  },
+  computed: {
+    userId () {
+      return this.$store.state.userInfo.id
+    },
+    allPages () {
+      const allPage = Math.ceil(this.total / this.pageQo.limit)
+      return (allPage === 0) ? 1 : allPage
+    }
+  },
   created () {
     this.$Loading.start()
     this.kw = this.$route.query.kw
   },
   mounted () {
-    this.collectionData = JSON.parse(localStorage.collection)
+    this.loadCollections()
     this.$Loading.finish()
   },
-  data () {
-    return {
-      kw: '',
-      currentPage: 1,
-      checkAll: false,
-      checkGroup: [],
-      checkedId: [],
-      collectionData: [],
-      showDelModal: false,
-      showAdmin: false,
-      adminText: '管理'
-    }
-  },
-  components: {
-    PostCard
-  },
-  watch: {
-    $route (to, from) {
-      this.$Loading.start()
-      this.currentPage = 1
-      this.kw = this.$route.query.kw
-      this.getData()
-        .then(res => {
-          this.$Loading.finish()
-        })
-        .catch(err => {
-          this.$Loading.error()
-          console.log(err)
-        })
-      infiniteScroll(this.$refs.content, 200, this.getMoreData, this.isEnd)
-    },
-    isEnd () {
-      if (this.isEnd) {
-        infiniteScroll(this.$refs.content, 200, this.getMoreData, this.isEnd)
-      }
-    }
-  },
   methods: {
-    handleAdmin () {
-      if (this.collectionData.length === 0) {
+    loadCollections () {
+      this.$api.user.loadCollections(this.userId, this.pageQo)
+        .then(res => {
+          if (res.data.success) {
+            this.total = res.data.total
+            this.collections = res.data.data
+          } else {
+            this.$Message.error(res.data.msg)
+          }
+        })
+    },
+    // 数字类别转英文
+    transType (typeNum) {
+      for (var key in BACKTYPES) {
+        if (BACKTYPES.hasOwnProperty(key)) {
+          if (BACKTYPES[key] === typeNum) {
+            return key
+          }
+        }
+      }
+    },
+    // 数字类别转中文
+    transTypeName (typeNum) {
+      let theType = this.transType(typeNum)
+      return (TYPES[theType] ? TYPES[theType] : '未知') + '曲谱'
+    },
+    handleManage () {
+      if (this.collections.length === 0) {
         this.$Notice.error({
           title: '暂无可以管理的数据哦 ＞︿＜'
         })
       } else {
-        this.showAdmin = !this.showAdmin
-        this.showAdmin ? (this.adminText = '完成') : (this.adminText = '管理')
-      }
-    },
-    handleCheck (index, id) {
-      if (!this.checkGroup[index]) {
-        this.checkGroup[index] = true
-        this.checkGroup.splice(0, 0)
-        this.checkedId.push(id)
-      } else {
-        this.checkGroup[index] = false
-        this.checkGroup.splice(0, 0)
-        let curIdx = this.checkedId.indexOf(id)
-        this.checkedId.splice(curIdx, 1)
+        this.showManage = !this.showManage
+        this.showManage ? (this.manageText = '完成') : (this.manageText = '管理')
+        if (!this.showManage) {
+          this.checkedIds = []
+          this.checkAll = false
+          this.indeterminate = true
+        }
       }
     },
     handleCheckAll () {
-      this.checkAll = !this.checkAll
+      if (this.indeterminate) {
+        this.checkAll = false
+      } else {
+        this.checkAll = !this.checkAll
+      }
+      this.indeterminate = false
+
       if (this.checkAll) {
-        this.checkedId = []
-        for (let i = 0; i < this.collectionData.length; i++) {
-          this.checkGroup[i] = true
-          this.checkedId.push(this.collectionData[i].id)
+        this.checkedIds = []
+        for (let i = 0; i < this.collections.length; i++) {
+          this.checkedIds.push(this.collections[i].id)
         }
       } else {
-        this.checkedId = []
-        for (let i = 0; i < this.collectionData.length; i++) {
-          this.checkGroup[i] = false
-        }
+        this.checkedIds = []
       }
     },
+    checkedIdsChange (data) {
+      if (data.length === this.collections.length) {
+        this.indeterminate = false
+        this.checkAll = true
+      } else if (data.length > 0) {
+        this.indeterminate = true
+        this.checkAll = false
+      } else {
+        this.indeterminate = false
+        this.checkAll = false
+      }
+    },
+    changePage (page) {
+      if (this.showManage) {
+        this.handleManage()
+      }
+      const allPages = this.allPages
+      if (page > allPages) {
+        page = allPages
+      }
+      this.pageQo.page = page
+      this.pageQo.offset = (page - 1) * this.pageQo.limit
+      this.loadCollections()
+    },
+    changePageSize (pageSize) {
+      if (this.showManage) {
+        this.handleManage()
+      }
+      this.pageQo.limit = pageSize
+      this.loadCollections()
+    },
     handleDelete () {
-      if (this.checkedId.length === 0) {
+      if (this.checkedIds.length === 0) {
         this.$Notice.error({
           title: '没有选择需要删除的数据哦 ＞︿＜'
         })
@@ -157,72 +211,51 @@ export default {
         this.showDelModal = true
       }
     },
-    delAll () {
+    delChecked () {
       this.showDelModal = false
-      const collection = JSON.parse(localStorage.collection)
-      for (let i = 0; i < this.checkedId.length; i++) {
-        let curIdx
-        for (let j = 0; j < collection.length; j++) {
-          if (this.checkedId[i] === collection[j].id) {
-            curIdx = j
+      this.$api.user.cancelCollections(this.userId, this.checkedIds)
+        .then(res => {
+          if (res.data.success) {
+            this.$Message.success('删除成功!')
+            this.loadCollections()
+          } else {
+            this.$Message.error(res.data.msg)
+            this.loadCollections()
           }
-        }
-        collection.splice(curIdx, 1)
-      }
-      this.checkGroup = []
-      this.checkAll = false
-      this.collectionData = collection
-      localStorage.collection = JSON.stringify(collection)
-
-      if (this.collectionData.length === 0) {
-        this.showAdmin = false
-        this.adminText = '管理'
-      }
-
-      this.$Notice.success({
-        title: '已经成功删除 (●ˇ∀ˇ●)'
-      })
+        })
     }
   }
 }
 </script>
 
-<style lang="less" scoped>
-.sec-1 {
-  line-height: 27px;
-
-  .admin-group > * {
-    margin-right: 10px;
-  }
-  .admin-opt {
-    display: inline-block;
-    vertical-align: top;
-  }
-  .btn {
-    height: 27px;
-    padding: 0 20px;
-    margin-right: 0;
-    font-size: 14px;
-    line-height: 25px;
-    letter-spacing: 2px;
-  }
-}
-
-.sec-2 {
-  .collection-list {
-    border-top: 1px dashed #e8eaec;
-    .collection-item {
-      list-style: none;
-      border-bottom: 1px dashed #e8eaec;
-      .title {
-        font-size: 16px;
-      }
-      line-height: 50px;
-    }
-  }
-}
-
-.no-data {
-  text-align: center;
-}
+<style lang="stylus" scoped>
+.userCollection
+  margin 10px 20px
+.sec-1
+  padding 0 20px
+  line-height 27px
+  .manage-group > *
+    margin-right 10px
+  .manage-opt
+    display inline-block
+    vertical-align top
+  .btn
+    height 27px
+    padding 0 20px
+    margin-right 0
+    font-size 14px
+    line-height 25px
+    letter-spacing 2px
+.sec-2
+  .collection-list
+    border-top 1px dashed #e8eaec
+    .collection-item
+      padding 0 20px
+      list-style none
+      border-bottom 1px dashed #e8eaec
+      .title
+        font-size 16px
+      line-height 40px
+.no-data
+  text-align center
 </style>

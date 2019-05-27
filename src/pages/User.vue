@@ -36,7 +36,8 @@
       <i-col span="4">
         <Menu :theme="theme"
               width="auto"
-              :active-name="nav[0].name">
+              :active-name="activeName"
+              style="height: 450px">
           <MenuItem v-for="(item, index) in nav"
                     :key="index"
                     :to="item.name"
@@ -56,6 +57,7 @@ export default {
   data () {
     return {
       theme: 'light',
+      activeName: 'info',
       nav: [
         { name: 'info', value: '个人信息' },
         { name: 'setting', value: '账号管理' },
@@ -68,6 +70,11 @@ export default {
   computed: {
     sex () {
       return SEX[this.userInfo.sex] ? SEX[this.userInfo.sex] : '未知'
+    }
+  },
+  watch: {
+    $route (to, from) {
+      this.activeName = to.name
     }
   },
   mounted () {

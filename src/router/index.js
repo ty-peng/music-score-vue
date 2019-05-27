@@ -118,7 +118,7 @@ export default new Router({
           name: 'uploads',
           component: UserUploads,
           meta: {
-            title: '我的收藏 - 有谱',
+            title: '我的上传 - 有谱',
             requireAuth: true
           }
         }

@@ -49,7 +49,7 @@ const user = {
     return axios.post(`${base.baseUrl}/user/${userId}/collection`, scoreId)
   },
   // 取消收藏 id: 收藏表id
-  cancelCollection (userId, id) {
+  cancelCollect (userId, id) {
     return axios.delete(`${base.baseUrl}/user/${userId}/collection/${id}`)
   },
   // 批量取消收藏 ids: 收藏表id数组

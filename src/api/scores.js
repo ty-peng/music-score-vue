@@ -11,10 +11,8 @@ const scores = {
     return axios.post(`${base.baseUrl}/scores/${scoresQo.cate}`, scoresQo)
   },
   // 曲谱详情
-  scoreDetail (id, params) {
-    return axios.get(`${base.baseUrl}/score/${id}`, {
-      params: params
-    })
+  loadDetails (id) {
+    return axios.get(`${base.baseUrl}/score/${id}`)
   }
 }
 

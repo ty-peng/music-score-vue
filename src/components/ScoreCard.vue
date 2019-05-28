@@ -2,7 +2,7 @@
   <Card class="card"
         :padding="0">
     <div class="thumbnail">
-      <router-link :to="'/score/'+ score.id"
+      <router-link :to="'/details/'+ score.id"
                    target="_blank">
         <img :src="score.img"
              :alt="score.title"
@@ -11,7 +11,7 @@
     </div>
     <div class="title"
          :title="title">
-      <router-link :to="'/score/'+ score.id"
+      <router-link :to="'/details/'+ score.id"
                    target="_blank">
         <h3>{{ title }}</h3>
       </router-link>
@@ -40,7 +40,7 @@
           {{ typeName }}
         </router-link>
       </span>
-      <router-link :to="'/score/'+ score.id"
+      <router-link :to="'/details/'+ score.id"
                    target="_blank">
         <span class="collections fr">
           <Icon type="md-star-outline" />

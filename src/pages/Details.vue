@@ -1,172 +1,179 @@
 <template>
-  <div class="details">
-    <main class="post-content">
-      <div class="sec-1 clearfix">
-        <h2 class="fl">{{ postData.title }}</h2>
-        <Button class="btn-collection fr"
-                size="small"
-                type="default"
-                @click="handleCollection">{{ hasCollected ? '已收藏' : '加入收藏' }}</Button>
-      </div>
-      <div class="sec-2">
-        <h3>♩ 谱子</h3>
-        <img v-for="(item, index) in postData.pics"
-             :src="item"
-             :key="'pic-'+index">
-      </div>
-      <div class="sec-3">
-        <h3 v-if="postData.videos && postData.videos.length > 0">♫ 教学视频</h3>
-        <iframe v-for="item in postData.videos"
-                :src="item"
-                frameborder="0"
-                :key="item.id"></iframe>
-      </div>
-      <div class="sec-4 related">
-        <h2>相关推荐</h2>
-        <h3 v-for="(item, index) in relatedData"
-            :key="'related-'+index">
-          <router-link :to="'/details/'+ item.id">{{ item.title }}</router-link>
-        </h3>
-      </div>
-    </main>
-  </div>
+  <main class="details">
+    <div class="info">
+      <Row>
+        <i-col span="17"
+               offset="3">
+          <h1>{{ score.title }}</h1>
+          <span>音乐人：</span>
+          <router-link :to="'/search?kw=' + score.artist">
+            <span>{{ score.artist }}</span>
+          </router-link>
+          <span style="margin-left: 10px">
+            <Icon type="md-eye" />
+            {{ score.views }}
+          </span>
+          <span>
+            <Icon type="md-heart-outline" />
+            {{ score.collects }}
+          </span>
+        </i-col>
+        <i-col span="1">
+          <div class="collect-btn"
+               @click="handleCollect">
+            <Icon :type="isCollected ? 'md-heart' : 'md-heart-outline'"
+                  color="#ff6666"
+                  size="50" />
+            <p align="center">{{ isCollected ? '已收藏' : '收藏' }}</p>
+          </div>
+        </i-col>
+      </Row>
+      <Row :gutter="20"
+           class="mt">
+        <i-col offset="3"
+               span="4">
+          <img :src="score.img" />
+        </i-col>
+        <i-col span="14">
+          <h2>曲谱描述：</h2>
+          <p class="mt">{{ score.desc }}</p>
+        </i-col>
+      </Row>
+    </div>
+    <Row class="content">
+      <i-col offset="3"
+             span="18">
+        <ul>
+          <li v-for="(item, index) in score.content.imgUrl"
+              :key="index">
+            <img :src="item" />
+          </li>
+        </ul>
+        <a target="_blank"
+           :href="score.content.url">
+          <h2 align="right">在线播放（需开启flash）>></h2>
+        </a>
+      </i-col>
+    </Row>
+  </main>
 </template>
 
 <script>
 export default {
-  name: 'Details',
-  created () {
-    this.$Loading.start()
-  },
-  mounted () {
-    this.getData(this.postId)
-    const collection = JSON.parse(localStorage.collection)
-    if (collection.length > 0) {
-      for (let i = 0; i < collection.length; i++) {
-        if (collection[i].id === this.postId) {
-          this.hasCollected = true
-          break
+  data () {
+    return {
+      score: {
+        id: 123,
+        title: '等你下课吉他曲谱',
+        artist: '周杰伦',
+        img: 'http://oss.tan8.com/yuepuku/115/57671/57671_prev.jpg?v=1558691923',
+        desc: '周杰伦 - 等你下课',
+        uploader: 'feiji',
+        uploadDatetime: '2015-06-01 15:02:33',
+        views: 12345,
+        collects: 12222,
+        collectId: null,
+        content: {
+          url: 'http://www.tan8.com/newFlash/player.swf?id=64275',
+          imgUrl: [
+            'http://oss.tan8.com/jtpnew/58/55758/8595e2ab986887360bc337d80c71ff6aweb_image_1_1.png',
+            'http://oss.tan8.com/jtpnew/58/55758/8595e2ab986887360bc337d80c71ff6aweb_image_1_2.png',
+            'http://oss.tan8.com/jtpnew/58/55758/8595e2ab986887360bc337d80c71ff6aweb_image_1_3.png',
+            'http://oss.tan8.com/jtpnew/58/55758/8595e2ab986887360bc337d80c71ff6aweb_image_1_4.png',
+            'http://oss.tan8.com/jtpnew/58/55758/8595e2ab986887360bc337d80c71ff6aweb_image_1_5.png'
+          ]
         }
       }
     }
   },
-  data () {
-    return {
-      postId: this.$route.params.id,
-      postData: {},
-      relatedData: {},
-      hasCollected: false
+  computed: {
+    scoreId () {
+      return this.$route.params.id
+    },
+    userId () {
+      return this.$store.state.userInfo.id ? this.$store.state.userInfo.id : null
+    },
+    isCollected () {
+      return !!this.score.collectId
+    },
+    showPianoPlayer () {
+      return !!this.score.content.url
     }
   },
-  components: {},
+  mounted () {
+    this.loadDetails()
+  },
   watch: {
-    $route (to, from) {
-      this.$Loading.start()
-      this.postId = this.$route.params.id
-      this.getData(this.postId)
+    scoreId () {
+      if (this.scoreId) {
+        this.loadDetails()
+      }
     }
   },
   methods: {
-    getData (postId) {
-      const self = this
-      this.$http
-        .get('/api/details', {
-          postId
-        })
+    loadDetails () {
+      this.$api.scores.loadDetails(this.scoreId)
         .then(res => {
-          this.postData = res.data
-          this.$Loading.finish()
-          document.body.scrollTop = 0
-          document.documentElement.scrollTop = 0
-          document.title = self.postData.title
-        })
-        .catch(err => {
-          this.$Loading.error()
-          console.log(err)
-        })
-
-      this.$http
-        .get('/api/related', {
-          postId
-        })
-        .then(res => {
-          this.relatedData = res.data
-        })
-        .catch(err => {
-          this.$Loading.error()
-          console.log(err)
+          if (res.data.success) {
+            this.score = res.data.data
+          } else {
+            this.$Message.error(res.data.msg)
+          }
         })
     },
-    handleCollection () {
-      this.hasCollected = !this.hasCollected
-      const collection = JSON.parse(localStorage.collection)
-      if (this.hasCollected) {
-        collection.push({
-          cate: this.postData.cate,
-          id: this.postData.id,
-          source: this.postData.source,
-          title: this.postData.title
+    handleCollect () {
+      if (!this.$store.state.userInfo || !this.$store.state.userInfo.id) {
+        this.$Message.info('登录后才能进行收藏~')
+        this.$router.push({
+          path: '/login',
+          query: { redirect: this.$route.fullPath }
         })
-        localStorage.collection = JSON.stringify(collection)
-        this.$Notice.success({
-          title: '已添加到收藏夹O(∩_∩)O'
-        })
+        return
+      }
+      if (this.isCollected) {
+        // 取消收藏
+        this.$api.user.cancelCollect(this.userId, this.score.collectId)
+          .then(res => {
+            if (res.data.success) {
+              this.score.collectId = null
+            } else {
+              this.$Message.error(res.data.msg)
+            }
+          })
       } else {
-        let curIdx
-
-        for (let i = 0; i < collection.length; i++) {
-          if (collection[i].id === this.postData.id) {
-            curIdx = i
-            break
-          }
-        }
-
-        collection.splice(curIdx, 1)
-        localStorage.collection = JSON.stringify(collection)
-        this.$Notice.success({
-          title: '已为您取消收藏>"<'
-        })
+        // 收藏
+        this.$api.user.collect(this.userId, this.scoreId)
+          .then(res => {
+            if (res.data.success) {
+              this.score.collectId = res.data.data.id
+            } else {
+              this.$Message.error(res.data.msg)
+            }
+          })
       }
     }
   }
 }
 </script>
 
-<style lang="less" scoped>
-h3 {
-  margin: 10px 0;
-  font-size: 16px;
-}
-
-.post-content {
-  width: 860px;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-  margin: 0 auto 20px;
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-}
-
-iframe {
-  display: block;
-  width: 487px;
-  height: 320px;
-  margin: 0 auto 20px;
-}
-
-.related {
-  border-top: 1px dashed #e8eaec;
-  padding-top: 10px;
-}
-
-.btn-collection {
-  height: 27px;
-  line-height: 27px;
-  padding: 0 20px;
-  vertical-align: baseline;
-}
+<style lang="stylus" scoped>
+.mt
+  margin-top 30px
+.details
+  width 1000px
+  margin 20px auto
+  padding 30px 30px
+.info
+  h1
+    margin 2px 0 10px 0
+  img
+    width 100%
+.collect-btn
+  cursor pointer
+.content
+  margin 30px auto
+ul, li
+  list-style none
+  img
+    width 100%
 </style>

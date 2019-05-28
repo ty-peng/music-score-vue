@@ -9,7 +9,7 @@
       </router-link>
     </div>
     <div class="title">
-      <router-link :to="'/score/'+ postData.id"
+      <router-link :to="'/details/'+ postData.id"
                    target="_blank">
         <h2>{{ postData.title }}</h2>
       </router-link>

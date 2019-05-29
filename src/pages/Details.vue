@@ -11,11 +11,11 @@
           </router-link>
           <span style="margin-left: 10px">
             <Icon type="md-eye" />
-            {{ score.views }}
+            {{ score.views ? score.views : 0 }}
           </span>
           <span>
             <Icon type="md-heart-outline" />
-            {{ score.collects }}
+            {{ score.collects ? score.collects : 0 }}
           </span>
         </i-col>
         <i-col span="1">

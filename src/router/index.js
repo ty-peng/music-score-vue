@@ -13,7 +13,7 @@ import UserInfo from '@/components/UserInfo'
 import UserSetting from '@/components/UserSetting'
 import UserCollection from '@/components/UserCollection'
 import UserUploads from '@/components/UserUploads'
-import Upload from '@/pages/Upload'
+import ScoreUpload from '@/pages/ScoreUpload'
 import UserSpace from '@/pages/UserSpace'
 import ScoresList from '@/components/ScoresList'
 import NotFound from '@/pages/NotFound'
@@ -151,7 +151,7 @@ export default new Router({
     {
       path: '/upload',
       name: 'upload',
-      component: Upload,
+      component: ScoreUpload,
       meta: {
         title: '上传曲谱 - 有谱',
         requireAuth: true

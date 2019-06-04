@@ -9,15 +9,15 @@
           v-if="isEdit">
       <FormItem label="用户名："
                 prop="account">
-        {{userInfo.account}}
+        {{this.$store.state.userInfo.account}}
       </FormItem>
       <FormItem label="昵称："
-                prop="nickName">
+                prop="nickname">
         <Input type="text"
                clearable
-               v-model="userInfo.nickName"
+               v-model="userInfo.nickname"
                placeholder="请输入昵称"
-               @on-change="handleChange('nickName')" />
+               @on-change="handleChange('nickname')" />
       </FormItem>
       <FormItem label="性别：">
         <RadioGroup v-model="userInfo.sex"
@@ -59,11 +59,11 @@
           v-else>
       <FormItem label="用户名："
                 prop="account">
-        {{userInfo.account}}
+        {{this.$store.state.userInfo.account}}
       </FormItem>
       <FormItem label="昵称："
-                prop="nickName">
-        {{userInfo.nickName}}
+                prop="nickname">
+        {{userInfo.nickname}}
       </FormItem>
       <FormItem label="性别：">
         {{sex}}
@@ -95,7 +95,7 @@ export default {
       isEdit: false,
       loading: false,
       userInfoRule: {
-        nickName: [
+        nickname: [
           { type: 'string', message: '请输入昵称', trigger: 'blur' }
         ]
       },
@@ -140,8 +140,8 @@ export default {
                 if (res.data.success) {
                   this.$Message.success('修改成功')
                   this.isEdit = false
-                  this.$store.commit(types.UPDATE_USER, res.data.data)
                   this.userInfo = res.data.data
+                  this.$store.commit(types.UPDATE_NICKNAME, this.userInfo.nickname)
                 } else {
                   this.$Message.error(res.data.msg)
                 }

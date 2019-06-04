@@ -24,5 +24,11 @@ export default {
     let user = qs.stringify(data) // 要转化成String
     localStorage.userInfo = user
     state.userInfo = data
+  },
+  [types.UPDATE_NICKNAME]: (state, nickname) => {
+    let user = qs.parse(localStorage.userInfo)
+    user.nickname = nickname
+    localStorage.userInfo = qs.stringify(user)
+    state.userInfo.nickname = nickname
   }
 }

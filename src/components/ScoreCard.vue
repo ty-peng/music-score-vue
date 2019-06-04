@@ -66,7 +66,7 @@ export default {
   },
   computed: {
     date () {
-      let dateObj = new Date(Date.parse(this.score.uploadDatetime.replace(/-/g, '/')))
+      let dateObj = new Date(Date.parse(this.score.uploadDatetime.replace(/-/g, '/').replace(/T/g, ' ')))
       let y = dateObj.getFullYear()
       let m = dateObj.getMonth() + 1
       m = m < 10 ? '0' + m : m

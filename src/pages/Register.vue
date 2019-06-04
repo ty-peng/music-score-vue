@@ -39,10 +39,10 @@
                    placeholder="请输入邮箱" />
           </FormItem>
           <FormItem label="昵称"
-                    prop="nickName">
+                    prop="nickname">
             <Input type="text"
                    clearable
-                   v-model="registerInfo.nickName"
+                   v-model="registerInfo.nickname"
                    placeholder="请输入昵称" />
           </FormItem>
           <FormItem label="密码"
@@ -171,7 +171,7 @@ export default {
         account: '',
         phone: null,
         email: '',
-        nickName: '',
+        nickname: '',
         password: '',
         passwordCheck: ''
       },
@@ -186,7 +186,7 @@ export default {
           { type: 'email', message: '邮箱格式不正确', trigger: 'blur' },
           { validator: validateEmail, trigger: 'blur' }
         ],
-        nickName: [
+        nickname: [
           { type: 'string', message: '请输入昵称', trigger: 'blur' }
         ],
         password: [

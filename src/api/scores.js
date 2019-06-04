@@ -10,6 +10,10 @@ const scores = {
   loadList (scoresQo) {
     return axios.post(`${base.baseUrl}/scores/${scoresQo.cate}`, scoresQo)
   },
+  // 搜索
+  search (scoresQo) {
+    return axios.post(`${base.baseUrl}/search`, scoresQo)
+  },
   // 曲谱详情 加载一次views浏览次数+1
   loadDetails (id) {
     return axios.get(`${base.baseUrl}/score/${id}`)

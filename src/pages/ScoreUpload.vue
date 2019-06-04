@@ -51,6 +51,15 @@
           </Upload>
         </div>
       </FormItem>
+      <FormItem label="类别"
+                prop="type">
+        <Select v-model="scoreInfo.type"
+                style="width:200px">
+          <Option v-for="item in types"
+                  :value="item.key"
+                  :key="item.key">{{ item.value }}</Option>
+        </Select>
+      </FormItem>
       <FormItem label="曲谱描述"
                 prop="desc">
         <Input type="textarea"
@@ -116,6 +125,7 @@
 </template>
 
 <script>
+import { VALUETYPES } from '../enums/enums'
 export default {
   data () {
     const validateImg = (rule, value, callback) => {
@@ -155,6 +165,7 @@ export default {
         title: '',
         artist: '',
         img: '',
+        type: 1,
         desc: '',
         content: {
           url: '',
@@ -167,6 +178,20 @@ export default {
       imgUpload: {}, // 上一次上传的图片的返回信息
       uploadImgs: [],
       uploadContents: []
+    }
+  },
+  computed: {
+    types () {
+      let result = []
+      for (var key in VALUETYPES) {
+        if (VALUETYPES.hasOwnProperty(key)) {
+          result.push({
+            key: VALUETYPES[key],
+            value: key
+          })
+        }
+      }
+      return result
     }
   },
   methods: {
@@ -242,6 +267,7 @@ export default {
       this.getImgUrlFromFileList()
       this.$refs[refName].validate((valid) => {
         if (valid) {
+          this.scoreInfo.content = JSON.stringify(this.scoreInfo.content)
           this.loading = true
           this.$api.scores.uploadScore(this.scoreInfo)
             .then(res => {
@@ -249,6 +275,10 @@ export default {
               if (res.data.success) {
                 this.$Message.success('上传曲谱成功~')
                 this.handleReset('scoreInfo')
+                this.scoreInfo.content = {
+                  url: '',
+                  imgUrl: []
+                }
               } else {
                 this.$Message.error(res.data.msg)
               }
@@ -297,12 +327,12 @@ main
 .upload-list-cover
   display none
   position absolute
-  top 0
+  top -50%
   bottom 0
   left 0
   right 0
   background rgba(0, 0, 0, 0.6)
-.upload-list:hover, .upload-list-cover
+.upload-list:hover .upload-list-cover
   display block
 .upload-list-cover i
   color #fff

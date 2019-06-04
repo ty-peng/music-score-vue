@@ -47,8 +47,9 @@ export default {
         { id: 3, src: '/static/img/c3.jpg', target: '' }
       ],
       scoresQo: {
-        type: 'piano',
+        type: 1,
         limit: 12,
+        page: 1,
         offset: 0
       },
       newList: [],

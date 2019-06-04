@@ -6,25 +6,25 @@
           :label-width="80"
           class="form">
       <FormItem label="用户密码"
-                prop="password">
+                prop="verfyPassword">
         <Input type="password"
                clearable
                style="width: 280px"
-               v-model="phoneSetting.password"
+               v-model="phoneSetting.verfyPassword"
                placeholder="请输入原密码" />
       </FormItem>
       <FormItem label="原手机号"
+                prop="oldPhone">
+        <Input type="tel"
+               clearable
+               v-model="phoneSetting.oldPhone"
+               placeholder="请输入原手机号" />
+      </FormItem>
+      <FormItem label="新手机号"
                 prop="phone">
         <Input type="tel"
                clearable
                v-model="phoneSetting.phone"
-               placeholder="请输入原手机号" />
-      </FormItem>
-      <FormItem label="新手机号"
-                prop="newPhone">
-        <Input type="tel"
-               clearable
-               v-model="phoneSetting.newPhone"
                placeholder="请输入新手机号" />
       </FormItem>
       <FormItem>
@@ -42,25 +42,25 @@
           :label-width="80"
           class="form">
       <FormItem label="用户密码"
-                prop="password">
+                prop="verfyPassword">
         <Input type="password"
                clearable
                style="width: 280px"
-               v-model="emailSetting.password"
+               v-model="emailSetting.verfyPassword"
                placeholder="请输入原密码" />
       </FormItem>
       <FormItem label="原邮箱"
+                prop="oldEmail">
+        <Input type="email"
+               clearable
+               v-model="emailSetting.oldEmail"
+               placeholder="请输入原邮箱" />
+      </FormItem>
+      <FormItem label="新邮箱"
                 prop="email">
         <Input type="email"
                clearable
                v-model="emailSetting.email"
-               placeholder="请输入原邮箱" />
-      </FormItem>
-      <FormItem label="新邮箱"
-                prop="newEmail">
-        <Input type="email"
-               clearable
-               v-model="emailSetting.newEmail"
                placeholder="请输入新邮箱" />
       </FormItem>
       <FormItem>
@@ -78,20 +78,20 @@
           :label-width="80"
           class="form">
       <FormItem label="原密码"
-                prop="password">
+                prop="oldPassword">
         <Input type="password"
                clearable
                style="width: 280px"
-               v-model="passwordSetting.password"
+               v-model="passwordSetting.oldPassword"
                placeholder="请输入原密码" />
       </FormItem>
       <FormItem label="新密码"
-                prop="newPassword">
+                prop="password">
         <Tooltip>
           <Input type="password"
                  clearable
                  style="width: 280px"
-                 v-model="passwordSetting.newPassword"
+                 v-model="passwordSetting.password"
                  placeholder="请输入新密码（6~16位）" />
           <div slot="content">
             <p>密码6~16位，至少包含1个字母和1个数字<br />
@@ -119,6 +119,7 @@
 </template>
 
 <script>
+import * as types from './../store/mutationType.js'
 import { UPDATE_TYPE } from '../enums/enums'
 export default {
   data () {
@@ -128,7 +129,7 @@ export default {
         callback(new Error('请输入密码'))
       } else if (!/^.*(?=.{6,16})(?=.*\d)(?=.*[A-Za-z]{1,})(?=[!@#$%^&*?,.]*).*$/.test(value)) {
         callback(new Error('密码格式不正确'))
-      } else if (value === this.passwordSetting.password) {
+      } else if (value === this.passwordSetting.oldPassword) {
         return callback(new Error('新密码与原密码相同'))
       } else {
         if (this.passwordSetting.repeatPassword !== '') {
@@ -141,7 +142,7 @@ export default {
     const validateRepeatPass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请确认密码'))
-      } else if (value !== this.passwordSetting.newPassword) {
+      } else if (value !== this.passwordSetting.password) {
         callback(new Error('两次输入的密码不一致!'))
       } else {
         callback()
@@ -154,13 +155,13 @@ export default {
       } else if (!/^1[34578]\d{9}$/.test(value)) {
         return callback(new Error('手机号格式不正确'))
       }
-      if (value === this.phoneSetting.phone) {
+      if (value === this.phoneSetting.oldPhone) {
         return callback(new Error('新手机号与原手机号相同'))
       }
       this.$api.user.checkAccount({ account: value, type: 'phone' })
         .then(res => {
           if (res.data.data.exist) {
-            callback(new Error(res.data.data.msg))
+            callback(new Error('该手机号已被占用~'))
           } else {
             callback()
           }
@@ -171,13 +172,13 @@ export default {
         // return callback(new Error('邮箱不能为空'))
         return callback()
       }
-      if (value === this.emailSetting.email) {
+      if (value === this.emailSetting.oldEmail) {
         return callback(new Error('新邮箱与原邮箱相同'))
       }
       this.$api.user.checkAccount({ account: value, type: 'email' })
         .then(res => {
           if (res.data.data.exist) {
-            callback(new Error(res.data.data.msg))
+            callback(new Error('该邮箱已被占用~'))
           } else {
             callback()
           }
@@ -186,49 +187,49 @@ export default {
     return {
       loading: false,
       phoneSetting: {
-        password: '',
-        phone: '',
-        newPhone: ''
+        verfyPassword: '',
+        oldPhone: '',
+        phone: ''
       },
       emailSetting: {
-        password: '',
-        email: '',
-        newEmail: ''
+        verfyPassword: '',
+        oldEmail: '',
+        email: ''
       },
       passwordSetting: {
+        oldPassword: '',
         password: '',
-        newPassword: '',
         repeatPassword: ''
       },
       phoneSettingRule: {
-        password: [
+        verfyPassword: [
           { required: true, type: 'string', message: '请输入密码', trigger: 'blur' }
         ],
-        phone: [
+        oldPhone: [
           { required: true, pattern: '^1[34578][0-9]{9}$', message: '请正确输入手机号', trigger: 'blur' }
         ],
-        newPhone: [
+        phone: [
           { required: true, message: '请输入新手机号', trigger: 'blur' },
           { validator: validatePhone, trigger: 'blur' }
         ]
       },
       emailSettingRule: {
-        password: [
+        verfyPassword: [
           { required: true, type: 'string', message: '请输入密码', trigger: 'blur' }
         ],
-        email: [
+        oldEmail: [
           { required: true, type: 'email', message: '请正确输入邮箱地址', trigger: 'blur' }
         ],
-        newEmail: [
+        email: [
           { required: true, type: 'email', message: '请正确输入邮箱地址', trigger: 'blur' },
           { validator: validateEmail, trigger: 'blur' }
         ]
       },
       passwordSettingRule: {
-        password: [
+        oldPassword: [
           { required: true, type: 'string', message: '请输入密码', trigger: 'blur' }
         ],
-        newPassword: [
+        password: [
           { required: true, validator: validatePass, trigger: 'blur' }
         ],
         repeatPassword: [
@@ -270,6 +271,7 @@ export default {
               if (res.data.success) {
                 this.$Message.success('修改成功')
                 this.$refs[refName].resetFields()
+                this.$store.commit(types.UPDATE_USER, res.data.data)
               } else {
                 this.$Message.error(res.data.msg)
               }

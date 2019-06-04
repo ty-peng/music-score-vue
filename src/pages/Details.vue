@@ -17,6 +17,14 @@
             <Icon type="md-heart-outline" />
             {{ score.collects ? score.collects : 0 }}
           </span>
+          <span style="margin-left: 10px">
+            <Icon type="md-cloud-upload" />
+            {{ score.uploadDatetime }}
+          </span>
+          <span v-if="score.updateDatetime">
+            <Icon type="md-create" />
+            {{ score.updateDatetime }}
+          </span>
         </i-col>
         <i-col span="1">
           <div class="collect-btn"
@@ -50,7 +58,8 @@
           </li>
         </ul>
         <a target="_blank"
-           :href="score.content.url">
+           :href="score.content.url"
+           v-if="score.content.url">
           <h2 align="right">在线播放（需开启flash）>></h2>
         </a>
       </i-col>
@@ -62,6 +71,7 @@
 export default {
   data () {
     return {
+      collectId: null,
       score: {
         id: 123,
         title: '等你下课吉他曲谱',
@@ -72,7 +82,6 @@ export default {
         uploadDatetime: '2015-06-01 15:02:33',
         views: 12345,
         collects: 12222,
-        collectId: null,
         content: {
           url: 'http://www.tan8.com/newFlash/player.swf?id=64275',
           imgUrl: [
@@ -83,6 +92,10 @@ export default {
             'http://oss.tan8.com/jtpnew/58/55758/8595e2ab986887360bc337d80c71ff6aweb_image_1_5.png'
           ]
         }
+      },
+      userCollect: {
+        userId: null,
+        scoreId: this.scoreId
       }
     }
   },
@@ -94,7 +107,7 @@ export default {
       return this.$store.state.userInfo.id ? this.$store.state.userInfo.id : null
     },
     isCollected () {
-      return !!this.score.collectId
+      return !!this.collectId
     },
     showPianoPlayer () {
       return !!this.score.content.url
@@ -102,6 +115,7 @@ export default {
   },
   mounted () {
     this.loadDetails()
+    this.loadCollectId()
   },
   watch: {
     scoreId () {
@@ -116,10 +130,23 @@ export default {
         .then(res => {
           if (res.data.success) {
             this.score = res.data.data
+            this.score.content = JSON.parse(res.data.data.content)
           } else {
             this.$Message.error(res.data.msg)
           }
         })
+    },
+    loadCollectId () {
+      if (this.userId) {
+        this.$api.user.loadCollectId(this.userId, this.scoreId)
+          .then(res => {
+            if (res.data.success) {
+              this.collectId = res.data.data
+            } else {
+              // this.$Message.error(res.data.msg)
+            }
+          })
+      }
     },
     handleCollect () {
       if (!this.$store.state.userInfo || !this.$store.state.userInfo.id) {
@@ -132,20 +159,21 @@ export default {
       }
       if (this.isCollected) {
         // 取消收藏
-        this.$api.user.cancelCollect(this.userId, this.score.collectId)
+        this.$api.user.cancelCollect(this.userId, this.collectId)
           .then(res => {
             if (res.data.success) {
-              this.score.collectId = null
+              this.collectId = null
             } else {
               this.$Message.error(res.data.msg)
             }
           })
       } else {
         // 收藏
-        this.$api.user.collect(this.userId, this.scoreId)
+        this.userCollect.scoreId = this.scoreId
+        this.$api.user.collect(this.userId, this.userCollect)
           .then(res => {
             if (res.data.success) {
-              this.score.collectId = res.data.data.id
+              this.collectId = res.data.data.id ? res.data.data.id : 123
             } else {
               this.$Message.error(res.data.msg)
             }

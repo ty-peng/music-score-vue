@@ -10,9 +10,15 @@ export const BACKTYPES = {
   ukulele: 3
 }
 
+export const VALUETYPES = {
+  钢琴: 1,
+  吉他: 2,
+  尤克里里: 3
+}
+
 export const SEX = {
-  '0': '女',
-  '1': '男'
+  0: '女',
+  1: '男'
 }
 
 export const UPDATE_TYPE = {

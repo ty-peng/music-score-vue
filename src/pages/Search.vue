@@ -31,7 +31,7 @@ export default {
       scoresQo: {
         kw: null,
         cate: 'hot',
-        searchType: null,
+        type: null,
         page: 1,
         offset: 0,
         limit: 10
@@ -72,7 +72,7 @@ export default {
         this.scoresQo.cate = 'hot'
       }
       this.scoresQo.kw = this.keywords
-      this.scoresQo.searchType = this.searchType
+      this.scoresQo.type = this.searchType
       this.$api.scores.loadList(this.scoresQo)
         .then(res => {
           if (res.data.success) {

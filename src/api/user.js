@@ -4,6 +4,7 @@
 
 import base from './base' // 导入接口域名列表
 import axios from './http' // 导入http中创建的axios实例
+import { UPDATE_TYPE } from './../enums/enums'
 
 const user = {
   // 登录，post提交token
@@ -21,7 +22,7 @@ const user = {
   },
   // 检查用户名/手机/邮箱是否已被使用
   checkAccount ({ account, type }) {
-    return axios.get(`${base.baseUrl}/accountCheck`, {
+    return axios.get(`${base.baseUrl}/user/accountCheck`, {
       params: {
         account: account,
         type: type
@@ -29,14 +30,22 @@ const user = {
     })
   },
   // 加载用户信息
-  loadUserInfo (id) {
+  loadUser (id) {
     return axios.get(`${base.baseUrl}/user/${id}`)
+  },
+  // 加载用户信息
+  loadUserInfo (id) {
+    return axios.get(`${base.baseUrl}/userInfo/${id}`)
   },
   // 更新用户信息
   updateUser (updatedUserInfo) {
     let id = updatedUserInfo.id
     // patch 部分更新
-    return axios.patch(`${base.baseUrl}/user/${id}`, updatedUserInfo)
+    if (updatedUserInfo.updateType === UPDATE_TYPE['userInfo']) {
+      return axios.patch(`${base.baseUrl}/userInfo/${id}`, updatedUserInfo)
+    } else if (updatedUserInfo.updateType === UPDATE_TYPE['userSetting']) {
+      return axios.patch(`${base.baseUrl}/user/${id}`, updatedUserInfo)
+    }
   },
   // 加载用户收藏
   loadCollections (userId, pageQo) {
@@ -44,9 +53,15 @@ const user = {
       params: pageQo
     })
   },
+  // 加载收藏id
+  loadCollectId (userId, scoreId) {
+    return axios.get(`${base.baseUrl}/user/${userId}/collectStatus`, {
+      params: { scoreId: scoreId }
+    })
+  },
   // 添加收藏
-  collect (userId, scoreId) {
-    return axios.post(`${base.baseUrl}/user/${userId}/collection`, scoreId)
+  collect (userId, userCollect) {
+    return axios.post(`${base.baseUrl}/user/${userId}/collection`, userCollect)
   },
   // 取消收藏 id: 收藏表id
   cancelCollect (userId, id) {

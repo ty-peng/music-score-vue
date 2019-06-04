@@ -29,7 +29,7 @@
                         :label="item.id">&nbsp;</Checkbox>
               <h3 class="title fl">
                 <Icon type="ios-musical-note" />
-                <router-link :to="'/details/' + item.scoreId">{{ item.title + ' - ' + item.artist }}</router-link>
+                <router-link :to="'/details/' + item.id">{{ item.title + ' - ' + item.artist }}</router-link>
               </h3>
               <router-link :to="'/scores/' + transType(item.type)"
                            class="type fr">{{ transTypeName(item.type) }}</router-link>

@@ -12,7 +12,8 @@ module.exports = {
     proxyTable: {
       '/api': {
         target:
-          'https://easy-mock.com/mock/5ccd79f0fbb74a2e6ff5dd8f/music-score',
+          // 'https://easy-mock.com/mock/5ccd79f0fbb74a2e6ff5dd8f/music-score',
+          'http://localhost:8080/music-score',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

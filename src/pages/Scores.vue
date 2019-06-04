@@ -19,15 +19,15 @@
         <Button type="text"
                 size="small"
                 shape="circle"
-                @click="loadList('hot')">热门</Button>
+                @click="handleClick('hot')">热门</Button>
         <Button type="text"
                 size="small"
                 shape="circle"
-                @click="loadList('recommend')">推荐</Button>
+                @click="handleClick('recommend')">推荐</Button>
         <Button type="text"
                 size="small"
                 shape="circle"
-                @click="loadList('new')">最新</Button>
+                @click="handleClick('new')">最新</Button>
       </span>
     </nav>
     <router-view :scores="scores"></router-view>
@@ -37,8 +37,8 @@
           show-sizer
           show-total
           align="center"
-          :current="scoresQo.page"
-          :page-size="scoresQo.limit"
+          :current="page"
+          :page-size="limit"
           @on-change="changePage"
           @on-page-size-change="changePageSize" />
   </div>
@@ -54,6 +54,8 @@ export default {
   data () {
     return {
       theme: 'light',
+      page: 1,
+      limit: 10,
       scoresQo: {
         cate: 'hot',
         type: null,
@@ -100,12 +102,18 @@ export default {
     this.loadList('hot')
   },
   methods: {
+    handleClick (cate) {
+      this.page = this.scoresQo.page = 1
+      this.limit = this.scoresQo.limit = 10
+      this.loadList(cate)
+    },
     loadList (cate) {
       if (cate) {
         this.scoresQo.cate = cate
       } else {
-        this.scoresQo.cate = this.$route.name
+        this.scoresQo.cate = 'hot'
       }
+      this.scoresQo.type = this.type
       this.$api.scores.loadList(this.scoresQo)
         .then(res => {
           if (res.data.success) {
@@ -121,13 +129,13 @@ export default {
       if (page > allPages) {
         page = allPages
       }
-      this.scoresQo.page = page
-      this.scoresQo.offset = (page - 1) * this.scoresQo.limit
-      this.loadList()
+      this.scoresQo.page = this.page = page
+      // this.offset = (page - 1) * this.scoresQo.limit
+      this.loadList(this.scoresQo.cate)
     },
     changePageSize (pageSize) {
-      this.scoresQo.limit = pageSize
-      this.loadList()
+      this.scoresQo.limit = this.limit = pageSize
+      this.loadList(this.scoresQo.cate)
     }
   }
 }

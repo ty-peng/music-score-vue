@@ -22,11 +22,11 @@
           <router-link to="/account/info">
             <Avatar style="background-color: #87d068;margin-left: 5px"
                     icon="ios-person"
-                    :src="user.avatar" />
+                    :src="user.avatar ? user.avatar : ''" />
           </router-link>
           <Dropdown>
             <a href="javascript:void(0)">
-              <h3>{{user.nickName}}
+              <h3>{{user.nickname ? user.nickname : ' '}}
                 <Icon type="ios-arrow-down"></Icon>
               </h3>
             </a>
@@ -129,7 +129,7 @@ export default {
   },
   computed: {
     user () {
-      return this.$store.state.userInfo
+      return this.$store.state.userInfo ? this.$store.state.userInfo : {}
     },
     isLogin () {
       return this.$store.getters.isLogin

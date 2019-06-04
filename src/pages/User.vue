@@ -14,19 +14,14 @@
         <div class="baseInfo">
           <p>
             <span>
-              昵称：{{userInfo.nickName ? userInfo.nickName : '-'}}
+              昵称：{{user.nickname ? user.nickname : '-'}}
             </span>
             <span>
-              {{sex}}
+              用户名：{{ userInfo.account }}
             </span>
           </p>
           <p>
-            <span>
-              上传数：{{userInfo.uploads ? userInfo.uploads : 0}}
-            </span>
-            <span>
-              收藏数：{{userInfo.collects ? userInfo.collects : 0}}
-            </span>
+            上次登录： {{ userInfo.lastLoginDatetime }}
           </p>
         </div>
       </i-col>
@@ -70,6 +65,9 @@ export default {
   computed: {
     sex () {
       return SEX[this.userInfo.sex] ? SEX[this.userInfo.sex] : '未知'
+    },
+    user () {
+      return this.$store.state.userInfo
     }
   },
   watch: {
@@ -83,7 +81,7 @@ export default {
   },
   methods: {
     loadUserInfo () {
-      this.$api.user.loadUserInfo(this.$store.state.userInfo.id)
+      this.$api.user.loadUser(this.$store.state.userInfo.id)
         .then(res => {
           if (res.data.success) {
             this.userInfo = res.data.data
